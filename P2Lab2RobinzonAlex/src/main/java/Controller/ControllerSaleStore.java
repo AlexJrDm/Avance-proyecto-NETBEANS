@@ -12,11 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
 
-//PRUEBA SI FUNCIONA EL SUBIR ARCHIVOS 
-//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-//EEEEEEEEEEEEEEEEEEEEEEEEEEEE
 public class ControllerSaleStore {
 
     SaleStore storeMenuSecond;
@@ -142,83 +138,83 @@ public class ControllerSaleStore {
     }
     
     public void addProductToCar() {
-    DefaultTableModel tableModel = (DefaultTableModel) storeMenuSecond.tabla.getModel();
-    int selectedRow = storeMenuSecond.tabla.getSelectedRow();
+        DefaultTableModel tableModel = (DefaultTableModel) storeMenuSecond.tabla.getModel();
+        int selectedRow = storeMenuSecond.tabla.getSelectedRow();
 
-    if (selectedRow != -1) {
-        String nombreP = (String) tableModel.getValueAt(selectedRow, 0);
-        String categoria = (String) tableModel.getValueAt(selectedRow, 1);
-        int stockActual = Integer.parseInt(String.valueOf(tableModel.getValueAt(selectedRow, 2)));
-        double precioUnitario = Double.parseDouble(String.valueOf(tableModel.getValueAt(selectedRow, 3)));
-        Object cantidadObj = tableModel.getValueAt(selectedRow, 4);
+        if (selectedRow != -1) {
+            String nombreP = (String) tableModel.getValueAt(selectedRow, 0);
+            String categoria = (String) tableModel.getValueAt(selectedRow, 1);
+            int stockActual = Integer.parseInt(String.valueOf(tableModel.getValueAt(selectedRow, 2)));
+            double precioUnitario = Double.parseDouble(String.valueOf(tableModel.getValueAt(selectedRow, 3)));
+            Object cantidadObj = tableModel.getValueAt(selectedRow, 4);
 
-        if (cantidadObj == null || cantidadObj.toString().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(storeMenuSecond, "Por favor, ingrese una cantidad válida.");
-            return;
-        }
-
-        int cantidad = Integer.parseInt(String.valueOf(cantidadObj));
-
-        if (cantidad > 0 && cantidad <= stockActual) {
-            // Calcular el precio total de la venta
-            double precioTotal = cantidad * precioUnitario;
-
-            // Verificar si el producto ya está en el carrito
-            boolean productoExistente = false;
-            for (ModelProductCar producto : carrito) {
-                if (producto.getNombreProducto().equals(nombreP)) {
-                    // Actualizar la cantidad del producto existente
-                    producto.setCantidad(producto.getCantidad() + cantidad);
-                    producto.setPrecioVenta(producto.getCantidad() * precioUnitario);
-                    productoExistente = true;
-                    break;
-                }
+            if (cantidadObj == null || cantidadObj.toString().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(storeMenuSecond, "Por favor, ingrese una cantidad válida.");
+                return;
             }
 
-            if (!productoExistente) {
-                // Crear un objeto del carrito
-                ModelProductCar productoCarrito = new ModelProductCar(nombreP, categoria, cantidad, precioTotal);
+            int cantidad = Integer.parseInt(String.valueOf(cantidadObj));
 
-                // Añadirlo a la lista del carrito
-                carrito.add(productoCarrito);
+            if (cantidad > 0 && cantidad <= stockActual) {
+                // Calcular el precio total de la venta
+                double precioTotal = cantidad * precioUnitario;
 
-                // Mostrar el producto añadido en la tabla
-                DefaultTableModel tableCarrito = (DefaultTableModel) storeMenuSecond.TablaCarrito.getModel();
-                tableCarrito.addRow(new Object[]{
-                    productoCarrito.getNombreProducto(),
-                    productoCarrito.getCategoria(),
-                    productoCarrito.getCantidad(),
-                    productoCarrito.getPrecioVenta()
-                });
-            } else {
-                // Actualizar la tabla del carrito
-                DefaultTableModel tableCarrito = (DefaultTableModel) storeMenuSecond.TablaCarrito.getModel();
-                for (int i = 0; i < tableCarrito.getRowCount(); i++) {
-                    if (tableCarrito.getValueAt(i, 0).equals(nombreP)) {
-                        tableCarrito.setValueAt(cantidad, i, 2);
-                        tableCarrito.setValueAt(cantidad * precioUnitario, i, 3);
+                // Verificar si el producto ya está en el carrito
+                boolean productoExistente = false;
+                for (ModelProductCar producto : carrito) {
+                    if (producto.getNombreProducto().equals(nombreP)) {
+                        // Actualizar la cantidad del producto existente
+                        producto.setCantidad(producto.getCantidad() + cantidad);
+                        producto.setPrecioVenta(producto.getCantidad() * precioUnitario);
+                        productoExistente = true;
                         break;
                     }
                 }
-            }
 
-            // Guardar el producto en la colección CarritoDeCompras
-                Document doc = new Document("NombreP", nombreP)
-                        .append("Categoria", categoria)
-                        .append("Cantidad", cantidad)
-                        .append("Precio Unitario", precioUnitario)
-                        .append("Precio Total", precioTotal);
-                if (mongo.saveCarBuys(doc)) {
-                    System.out.println("[DEPURACION] el carrito fue aniadido correctamente a la base de datos");
+                if (!productoExistente) {
+                    // Crear un objeto del carrito
+                    ModelProductCar productoCarrito = new ModelProductCar(nombreP, categoria, cantidad, precioTotal);
+
+                    // Añadirlo a la lista del carrito
+                    carrito.add(productoCarrito);
+
+                    // Mostrar el producto añadido en la tabla
+                    DefaultTableModel tableCarrito = (DefaultTableModel) storeMenuSecond.TablaCarrito.getModel();
+                    tableCarrito.addRow(new Object[]{
+                        productoCarrito.getNombreProducto(),
+                        productoCarrito.getCategoria(),
+                        productoCarrito.getCantidad(),
+                        productoCarrito.getPrecioVenta()
+                    });
                 } else {
-                    System.out.println("[DEPURACION] el producto fue aniadido al carrito pero no a la base de datos.");
-               }
+                    // Actualizar la tabla del carrito
+                    DefaultTableModel tableCarrito = (DefaultTableModel) storeMenuSecond.TablaCarrito.getModel();
+                    for (int i = 0; i < tableCarrito.getRowCount(); i++) {
+                        if (tableCarrito.getValueAt(i, 0).equals(nombreP)) {
+                            tableCarrito.setValueAt(cantidad, i, 2);
+                            tableCarrito.setValueAt(cantidad * precioUnitario, i, 3);
+                            break;
+                        }
+                    }
+                }
 
-                // Actualizar el stock en la base de datos
-                int nuevoStock = stockActual - cantidad;
-                Bson filter = Filters.eq("NombreP", nombreP);
-               Bson updateOperation = new Document("$set", new Document("Stock Actual", nuevoStock));
-               mongo.createConnection().getCollection("ProductsAdd").updateOne(filter, updateOperation);
+                // Guardar el producto en la colección CarritoDeCompras
+                    Document doc = new Document("NombreP", nombreP)
+                            .append("Categoria", categoria)
+                            .append("Cantidad", cantidad)
+                            .append("Precio Unitario", precioUnitario)
+                            .append("Precio Total", precioTotal);
+                    if (mongo.saveCarBuys(doc)) {
+                        System.out.println("[DEPURACION] el carrito fue aniadido correctamente a la base de datos");
+                    } else {
+                        System.out.println("[DEPURACION] el producto fue aniadido al carrito pero no a la base de datos.");
+                    }
+
+                    // Actualizar el stock en la base de datos
+                    int nuevoStock = stockActual - cantidad;
+                    Bson filter = Filters.eq("NombreP", nombreP);
+                    Bson updateOperation = new Document("$set", new Document("Stock Actual", nuevoStock));
+                    mongo.createConnection().getCollection("ProductsAdd").updateOne(filter, updateOperation);
 
                 // Actualizar el stock en la tabla
                 tableModel.setValueAt(nuevoStock, selectedRow, 2);
