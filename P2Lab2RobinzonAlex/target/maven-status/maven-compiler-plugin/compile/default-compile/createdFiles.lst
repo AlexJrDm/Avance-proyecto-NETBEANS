@@ -24,6 +24,7 @@ View\MainMenu.class
 View\SaleStore$3.class
 Controller\ControllerAdmin.class
 View\Admin$2.class
+View\SaleStore$9.class
 Controller\ControllerSaleStore.class
 View\SaleStore$6.class
 Controller\ControllerUser.class

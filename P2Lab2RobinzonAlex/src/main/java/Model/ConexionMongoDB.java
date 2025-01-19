@@ -6,6 +6,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
@@ -21,6 +22,7 @@ public class ConexionMongoDB {
     private final String collectionNameUser = "Usuarios";
     private final String collectionNameProducts = "ProductsAdd";
     private final String collectionNameCarProducts = "CarritoDeCompras";
+    private final String collectionNameClients = "Clients";
 
     public ConexionMongoDB() {
         mongoClient = MongoClients.create("mongodb://localhost:27017");
@@ -36,6 +38,10 @@ public class ConexionMongoDB {
         if (!database.listCollectionNames().into(new ArrayList<>()).contains(collectionNameCarProducts)) {
             database.createCollection(collectionNameCarProducts);
         }
+        
+        if (!database.listCollectionNames().into(new ArrayList<>()).contains(collectionNameClients)) {
+            database.createCollection(collectionNameClients);
+        }
     }
 
     public MongoDatabase getDataBase() {
@@ -44,6 +50,10 @@ public class ConexionMongoDB {
 
     public MongoCollection<Document> getCollectionInv() {
         return database.getCollection("ProductsAdd");
+    }
+    
+    public MongoCollection<Document> getCollectionCar() {
+        return database.getCollection("CarritoDeCompras");
     }
 
     public MongoDatabase createConnection() {
@@ -61,6 +71,20 @@ public class ConexionMongoDB {
             MongoDatabase db = createConnection();
             if (db != null) {
                 MongoCollection collection = db.getCollection(collectionNameUser);
+                collection.insertOne(document);
+                return true;
+            }
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public boolean createDocumentClients(Document document) {
+        try {
+            MongoDatabase db = createConnection();
+            if (db != null) {
+                MongoCollection collection = db.getCollection(collectionNameClients);
                 collection.insertOne(document);
                 return true;
             }
@@ -189,7 +213,7 @@ public class ConexionMongoDB {
         return false;
     }
 
-    public ArrayList<Document> searchDocument(Document filtro) {
+    public ArrayList<Document> searchDocument(Bson filtro) {
         MongoDatabase db = createConnection();
         try {
             MongoCollection<Document> collection = db.getCollection(collectionNameUser);
@@ -223,10 +247,10 @@ public class ConexionMongoDB {
 
         try {
             MongoCollection<Document> collection = database.getCollection(collectionNameUser);
-            Document filter = new Document("_id", new ObjectId(userId));
+            Bson filter = Filters.eq("_id", new ObjectId(userId));
 
             // Buscando el producto por código dentro de la lista de productos del usuario
-            Document query = new Document("Products.Código", codigo);
+            Bson query = Filters.eq("Products.Código", codigo);
             Document userDoc = collection.find(filter).first();  //asegurar de que el filtro incluya el código del producto
 
             ArrayList<Document> resultados = new ArrayList<>();
@@ -248,6 +272,7 @@ public class ConexionMongoDB {
     }
 
     public DefaultTableModel loadDataTable(String userId) {
+        
         if (userId == null || userId.trim().isEmpty()) {
             throw new IllegalArgumentException("La variable UserID no puede ser vacia o nula");
         }

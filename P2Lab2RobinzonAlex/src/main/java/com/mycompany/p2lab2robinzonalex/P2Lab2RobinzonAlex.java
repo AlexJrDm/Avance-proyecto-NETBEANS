@@ -1,6 +1,7 @@
 package com.mycompany.p2lab2robinzonalex;
 
 import Controller.ControllerAdmin;
+import Controller.ControllerFacture;
 import Controller.ControllerSaleStore;
 import Controller.ControllerStore;
 import Controller.ControllerUser;
@@ -32,9 +33,10 @@ public class P2Lab2RobinzonAlex {
         MenuAdmin menuAdmin = new MenuAdmin();
         ControllerSaleStore controlSaleStore = new ControllerSaleStore(storeMenuSecond, mongo);
         ControllerAdmin controllerAdmin = new ControllerAdmin(mongo, admin);
+        ControllerFacture controllerFacture = new ControllerFacture(factura);
         ControllerStore control = new ControllerStore(addProduct, productModel, 
                 login, regis, userController, recover, storeMenuSecond, controlSaleStore, menu, factura, controllerAdmin,
-        menuAdmin, admin);
+        menuAdmin, admin, controllerFacture);
         control.startViewLogin();
     }
 }

@@ -45,12 +45,14 @@ public class ControllerStore implements ActionListener {
     private ControllerAdmin controllerAdmin;
     private MenuAdmin menuAdmin;
     private Admin admin;
+    private ControllerFacture controllerFacture;
 
     private String currentUserId;
 
     public ControllerStore(AddProduct addProduct, Products productModel, Login login, Registration regis,
             ControllerUser userController, RecoverPassword recover, SaleStore store,
-            ControllerSaleStore controlSaleStore, MainMenu menu, FactureClients facture, ControllerAdmin controllerAdmin, MenuAdmin menuAdmin, Admin admin) {
+            ControllerSaleStore controlSaleStore, MainMenu menu, FactureClients facture, ControllerAdmin controllerAdmin, 
+            MenuAdmin menuAdmin, Admin admin, ControllerFacture controllerFacture) {
         this.addProduct = addProduct;
         this.productModel = productModel;
         this.login = login;
@@ -64,6 +66,7 @@ public class ControllerStore implements ActionListener {
         this.controllerAdmin = controllerAdmin;
         this.menuAdmin = menuAdmin;
         this.admin = admin;
+        this.controllerFacture = controllerFacture;
 
         cleanDataAddProducts();
         cleanValidations();
@@ -92,6 +95,7 @@ public class ControllerStore implements ActionListener {
         this.controlSaleStore.storeMenuSecond.itemLacteos.addActionListener(this);
         this.controlSaleStore.storeMenuSecond.btnAddToCar.addActionListener(this);
         this.controlSaleStore.storeMenuSecond.btnCancelar.addActionListener(this);
+        this.controlSaleStore.storeMenuSecond.btnCloseBuys.addActionListener(this);
         this.login.lblRegistrarse.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -112,7 +116,6 @@ public class ControllerStore implements ActionListener {
         this.recover.btnVolver.addActionListener(this);
         this.store.btnVolver.addActionListener(this);
         this.menu.btnAddProduct.addActionListener(this);
-        this.menu.btnFacturas.addActionListener(this);
         this.menu.btnInventarioVenta.addActionListener(this);
         this.menu.btnSalir.addActionListener(this);
         this.facture.btnVolver.addActionListener(this);
@@ -122,6 +125,7 @@ public class ControllerStore implements ActionListener {
         this.admin.btnEliminar.addActionListener(this);
         this.admin.btnRecargarTabla.addActionListener(this);
         this.admin.btnVolver.addActionListener(this);
+        this.facture.btnFactura.addActionListener(this);
         
         addProduct.tabla.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -246,14 +250,19 @@ public class ControllerStore implements ActionListener {
     }
 
     public void saveProducts() {
+         if (currentUserId == null || currentUserId.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(addProduct, "Error: ID de usuario no válido.",
+                    "Error de validación", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
         String codigo = addProduct.txtCode.getText().trim();
 
         // Verificar si ya existe un documento con la misma cédula
-        Document filtro = new Document("Código", codigo);
+        Bson filtro = Filters.eq("Código", codigo);
         ArrayList<Document> resultados = mongo.searchProductByUser(currentUserId, codigo);
 
-        System.out.println("Filtro para búsqueda: " + filtro.toJson());
+        System.out.println("Filtro para búsqueda: " + filtro.toBsonDocument());
 
         if (resultados != null && !resultados.isEmpty()) {
             cleanDataAddProducts();
@@ -286,12 +295,12 @@ public class ControllerStore implements ActionListener {
                     .append("Stock Mínimo", productModel.getStockMin())
                     .append("Stock Actual", productModel.getStockCurrent())
                     .append("Categoria", productModel.getCategory());
-            if (mongo.addProductToUser(currentUserId, productDoc)) {
+                mongo.addProductToUser(currentUserId, productDoc);
                 mongo.createDocumentProducts(productDoc);
                 loadTable(currentUserId);
                 JOptionPane.showMessageDialog(addProduct, "Datos guardados correctamente.");
                 products.getData();
-            }
+            
             
         } else {
             JOptionPane.showMessageDialog(addProduct, "Por favor, corrija los campos inválidos.",
@@ -459,6 +468,10 @@ public class ControllerStore implements ActionListener {
         if (e.getSource() == regis.btnRegistrations) { //boton de registro
             registerUser();
         }
+        
+        if (e.getSource() == controlSaleStore.storeMenuSecond.btnCloseBuys) {
+            controlSaleStore.starViewFacture();
+        }
 
         if (e.getSource() == login.btnLogin) { //boton de iniciar sesión
             String userInput = login.txtUser.getText();
@@ -479,7 +492,6 @@ public class ControllerStore implements ActionListener {
                     System.out.println("[DEPURACION] no se ha podido encontrar cuenta con tales credenciales");
                 }
             }
- 
         }
         if (e.getSource() == login.btnExit) { //boton de salida
             btnExit();
@@ -508,7 +520,7 @@ public class ControllerStore implements ActionListener {
         }
 
         if (e.getSource() == addProduct.btnReturn) { //volver a la pagina principal
-           login.setVisible(true);
+           menu.setVisible(true);
            addProduct.setVisible(false);
         }
 
@@ -537,16 +549,16 @@ public class ControllerStore implements ActionListener {
             store.setVisible(false);
         }
         if (e.getSource() == menu.btnAddProduct) {
+            System.out.println("Ingreso al inventario exitoso para el vendedor");
+            loginUser();
             login.setVisible(false);
             menu.setVisible(false);
             addProduct.setVisible(true);
         }
-        if (e.getSource() == menu.btnFacturas) {
-            login.setVisible(false);
-            menu.setVisible(false);
-            facture.setVisible(true);
-        }
+        
         if (e.getSource() ==menu.btnInventarioVenta) {
+            System.out.println("Ingreso a la venta exitoso para el usuario");
+            loginUser();
             controlSaleStore.storeMenuSecond.setVisible(true);
             login.setVisible(false);
             menu.setVisible(false);
@@ -580,7 +592,11 @@ public class ControllerStore implements ActionListener {
             controllerAdmin.deleteUser();
         }
         if (e.getSource() == admin.btnRecargarTabla) {
-            controlSaleStore.cargarTabla();
+            controllerAdmin.cargarTablaAdmin();
+        }
+        if (e.getSource() == facture.btnFactura) {
+            System.out.println("Imprimir factura de clientes");
+            controllerFacture.factura();
         }
     }
 
@@ -617,16 +633,15 @@ public class ControllerStore implements ActionListener {
 
     public void loginUser() {
         loginSeller.setUser(login.txtUser.getText().trim());
-        loginSeller.setPassword(new String(login.password.getPassword()).trim());
+        loginSeller.setPassword(String.valueOf(login.password.getPassword()).trim());
 
         if (loginSeller.validationsLogin(login)) {
             if (userController.login(loginSeller.getUser(), loginSeller.getPassword())) {
-                Document filtro = new Document("User", loginSeller.getUser());
+                Bson filtro = Filters.eq("User", loginSeller.getUser());
                 ArrayList<Document> resultados = mongo.searchDocument(filtro);
 
                 if (resultados != null && !resultados.isEmpty()) {
-                    currentUserId = resultados.get(0).getObjectId("_id").toString();
-                    JOptionPane.showMessageDialog(login, "Inicio de sesión exitoso.");
+                    currentUserId = String.valueOf(resultados.get(0).getObjectId("_id"));
                     menu.setVisible(true);
                     login.setVisible(false);
                     loadTable(currentUserId);

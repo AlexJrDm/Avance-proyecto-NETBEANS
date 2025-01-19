@@ -41,29 +41,29 @@ public class FactureClients extends javax.swing.JFrame {
         jPanel10 = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnFactura = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        txtProductos = new javax.swing.JTextArea();
         jLabel8 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        txtLastNames = new javax.swing.JTextField();
+        txtNames = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
+        txtEmail = new javax.swing.JTextField();
+        txtDni = new javax.swing.JTextField();
+        txtAddress = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        jLabel13 = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
+        lblErrorLastNames = new javax.swing.JLabel();
+        lblErrorEmail = new javax.swing.JLabel();
+        lblErrorDni = new javax.swing.JLabel();
+        lblErrorNames = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
-        jTextField6 = new javax.swing.JTextField();
-        jLabel17 = new javax.swing.JLabel();
+        txtCellPhone = new javax.swing.JTextField();
+        lblErrorCell = new javax.swing.JLabel();
         btnVolver = new javax.swing.JButton();
+        lblErrorDireccion = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -190,11 +190,8 @@ public class FactureClients extends javax.swing.JFrame {
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/facturaLogo.jpg"))); // NOI18N
 
-        jButton1.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
-        jButton1.setText("Generar Factura");
-
-        jButton2.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
-        jButton2.setText("Mostrar productos");
+        btnFactura.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
+        btnFactura.setText("Generar Factura");
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -204,24 +201,20 @@ public class FactureClients extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel4)
                 .addGap(18, 18, 18)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addComponent(btnFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(114, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel1.add(jPanel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 480, 490, 80));
+        jPanel1.add(jPanel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 480, 380, 80));
 
         jLabel5.setText("Apellidos");
         jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 170, -1, -1));
@@ -232,39 +225,40 @@ public class FactureClients extends javax.swing.JFrame {
         jLabel7.setText("Email");
         jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 400, -1, -1));
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jTextArea1.setText("Productos Comprados");
-        jTextArea1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jScrollPane1.setViewportView(jTextArea1);
+        txtProductos.setColumns(20);
+        txtProductos.setRows(5);
+        txtProductos.setText("Productos Comprados");
+        txtProductos.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jScrollPane1.setViewportView(txtProductos);
 
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 170, 380, 300));
 
         jLabel8.setText("Dirección");
         jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 270, -1, -1));
-        jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 200, 290, -1));
-        jPanel1.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 200, 220, -1));
+        jPanel1.add(txtLastNames, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 200, 290, -1));
+        jPanel1.add(txtNames, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 200, 220, -1));
 
         jLabel9.setText("Cédula");
         jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 270, -1, -1));
-        jPanel1.add(jTextField3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 440, 300, -1));
-        jPanel1.add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 300, 220, -1));
-        jPanel1.add(jTextField5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 300, 300, -1));
+        jPanel1.add(txtEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 440, 300, -1));
+        jPanel1.add(txtDni, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 300, 220, -1));
+        jPanel1.add(txtAddress, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 300, 300, -1));
         jPanel1.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 440, 300, 20));
-        jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 240, 300, 20));
-        jPanel1.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 340, 300, 20));
-        jPanel1.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 340, 220, 20));
-        jPanel1.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 240, 220, 20));
+        jPanel1.add(lblErrorLastNames, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 240, 300, 20));
+        jPanel1.add(lblErrorEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 480, 300, 20));
+        jPanel1.add(lblErrorDni, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 340, 220, 20));
+        jPanel1.add(lblErrorNames, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 240, 220, 20));
 
         jLabel16.setText("Teléfono");
         jPanel1.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 400, -1, -1));
-        jPanel1.add(jTextField6, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 440, 220, -1));
-        jPanel1.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 490, 220, 20));
+        jPanel1.add(txtCellPhone, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 440, 220, -1));
+        jPanel1.add(lblErrorCell, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 480, 220, 20));
 
         btnVolver.setBackground(new java.awt.Color(255, 51, 0));
         btnVolver.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         btnVolver.setText("Salir");
         jPanel1.add(btnVolver, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 530, -1, -1));
+        jPanel1.add(lblErrorDireccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 340, 300, 20));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -316,18 +310,12 @@ public class FactureClients extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JButton btnFactura;
     public javax.swing.JButton btnVolver;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -347,12 +335,18 @@ public class FactureClients extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
+    public javax.swing.JLabel lblErrorCell;
+    public javax.swing.JLabel lblErrorDireccion;
+    public javax.swing.JLabel lblErrorDni;
+    public javax.swing.JLabel lblErrorEmail;
+    public javax.swing.JLabel lblErrorLastNames;
+    public javax.swing.JLabel lblErrorNames;
+    public javax.swing.JTextField txtAddress;
+    public javax.swing.JTextField txtCellPhone;
+    public javax.swing.JTextField txtDni;
+    public javax.swing.JTextField txtEmail;
+    public javax.swing.JTextField txtLastNames;
+    public javax.swing.JTextField txtNames;
+    public javax.swing.JTextArea txtProductos;
     // End of variables declaration//GEN-END:variables
 }

@@ -26,9 +26,9 @@ public class SaleStore extends javax.swing.JFrame {
         btnAddToCar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
         btnVolver = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
+        btnCloseBuys = new javax.swing.JButton();
+        rbtnSi = new javax.swing.JRadioButton();
+        rbtnNo = new javax.swing.JRadioButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -136,19 +136,24 @@ public class SaleStore extends javax.swing.JFrame {
         btnVolver.setText("Volver");
         jPanel5.add(btnVolver, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, -1, -1));
 
-        jButton3.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jButton3.setText("Terminar Compra");
-        jPanel5.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 70, -1, -1));
+        btnCloseBuys.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        btnCloseBuys.setText("Terminar Compra");
+        btnCloseBuys.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCloseBuysActionPerformed(evt);
+            }
+        });
+        jPanel5.add(btnCloseBuys, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 70, -1, -1));
 
         jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 250, 310, 110));
 
-        rbtnGrupo.add(jRadioButton1);
-        jRadioButton1.setText("Si");
-        jPanel1.add(jRadioButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 220, -1, -1));
+        rbtnGrupo.add(rbtnSi);
+        rbtnSi.setText("Si");
+        jPanel1.add(rbtnSi, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 220, -1, -1));
 
-        rbtnGrupo.add(jRadioButton2);
-        jRadioButton2.setText("No");
-        jPanel1.add(jRadioButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 220, -1, -1));
+        rbtnGrupo.add(rbtnNo);
+        rbtnNo.setText("No");
+        jPanel1.add(rbtnNo, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 220, -1, -1));
 
         jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jLabel3.setText("¿Desea factura con datos?");
@@ -384,6 +389,10 @@ public class SaleStore extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_itemAseoHogarActionPerformed
 
+    private void btnCloseBuysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseBuysActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnCloseBuysActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -426,6 +435,7 @@ public class SaleStore extends javax.swing.JFrame {
     public javax.swing.JButton btnAddToCar;
     public javax.swing.JButton btnBuscarProducto;
     public javax.swing.JButton btnCancelar;
+    public javax.swing.JButton btnCloseBuys;
     public javax.swing.JButton btnVolver;
     public javax.swing.JMenuItem itemAlacena;
     public javax.swing.JMenuItem itemAseoHogar;
@@ -437,7 +447,6 @@ public class SaleStore extends javax.swing.JFrame {
     public javax.swing.JMenuItem itemLegumbres;
     public javax.swing.JMenuItem itemMascotas;
     public javax.swing.JMenuItem itemRecarga;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -455,8 +464,6 @@ public class SaleStore extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     public javax.swing.JMenu menuAlacena;
@@ -469,6 +476,8 @@ public class SaleStore extends javax.swing.JFrame {
     public javax.swing.JMenu menuMascotas;
     public javax.swing.JMenu menuRecarga;
     public javax.swing.ButtonGroup rbtnGrupo;
+    public javax.swing.JRadioButton rbtnNo;
+    public javax.swing.JRadioButton rbtnSi;
     public javax.swing.JTable tabla;
     public javax.swing.JTextField txtProducto;
     // End of variables declaration//GEN-END:variables

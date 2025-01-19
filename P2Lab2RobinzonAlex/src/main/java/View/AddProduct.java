@@ -207,7 +207,7 @@ public class AddProduct extends javax.swing.JFrame {
 
         btnReturn.setBackground(new java.awt.Color(255, 102, 51));
         btnReturn.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        btnReturn.setText("Login");
+        btnReturn.setText("Volver");
         btnReturn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnReturnActionPerformed(evt);

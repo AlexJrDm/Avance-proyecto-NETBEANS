@@ -2,6 +2,7 @@ package Controller;
 
 import Model.ConexionMongoDB;
 import Model.ModelProductCar;
+import View.FactureClients;
 import View.SaleStore;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
@@ -17,6 +18,8 @@ public class ControllerSaleStore {
 
     SaleStore storeMenuSecond;
     ConexionMongoDB mongo;
+    FactureClients facture;
+    ControllerFacture controllerFacture;
     
     private List<ModelProductCar> carrito = new ArrayList<>();
 
@@ -36,23 +39,56 @@ public class ControllerSaleStore {
         storeMenuSecond.TablaCarrito.setModel(tableModelCarrito);
     }
     
+    public void starViewFacture() {
+        if (storeMenuSecond.rbtnSi.isSelected()) {
+            facture.setVisible(true);
+            storeMenuSecond.setVisible(false);
+            controllerFacture.mostrarProductos();
+        } else {
+            JOptionPane.showMessageDialog(facture, "La venta se ha realizado con éxito","Éxito",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+    
     public void cargarTabla() {
         List<Document> products = mongo.getAllProductsFromStore();
         DefaultTableModel tableModel = new DefaultTableModel(new Object[]{"NombreP", "Categoria", "Stock Actual", "Precio Unitario", "Cantidad"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                // Hacer que solo la columna "Cantidad" sea editable
-                return column == 4;
+                return column == 4; // Hacer que solo la columna "Cantidad" sea editable
             }
         };
         storeMenuSecond.tabla.setModel(tableModel);
         tableModel.setRowCount(0); // Limpiar la tabla
 
         for (Document product : products) {
+            int stockActual = product.get("Stock Actual") != null ? product.getInteger("Stock Actual") : 0;
+            int stockMinimo = product.get("Stock Minimo") != null ? product.getInteger("Stock Minimo") : 5; // Ejemplo de valor por defecto
             String nombreP = product.getString("NombreP");
             String categoria = product.getString("Categoria");
-            String stockActual = product.get("Stock Actual") != null ? String.valueOf(product.get("Stock Actual")) : "0";
-            String precioUnitario = product.get("Precio Unitario") != null ? String.valueOf(product.get("Precio Unitario")) : "0";
+            double precioUnitario = 0.0;
+
+            // Manejar el caso en el que el precio unitario es un String
+            if (product.get("Precio Unitario") instanceof Double) {
+                precioUnitario = product.getDouble("Precio Unitario");
+            } else if (product.get("Precio Unitario") instanceof String) {
+                try {
+                    precioUnitario = Double.parseDouble(product.getString("Precio Unitario"));
+                } catch (NumberFormatException e) {
+                    System.out.println("[ERROR] No se pudo convertir el precio unitario a Double: " + product.getString("Precio Unitario"));
+                }
+            }
+
+            if (stockActual == 0) {
+                System.out.println("[DEPURACIÓN] Producto eliminado por stock agotado: " + nombreP);
+                continue; // Si el stock es 0, no agregarlo a la tabla
+            }
+
+            if (stockActual <= stockMinimo) {
+                JOptionPane.showMessageDialog(storeMenuSecond, 
+                    "El producto " + nombreP + " ha alcanzado su stock mínimo (" + stockMinimo + "). ¡Realice un nuevo pedido!",
+                    "Advertencia", JOptionPane.WARNING_MESSAGE);
+            }
 
             Object[] row = {
                 nombreP,
@@ -148,6 +184,13 @@ public class ControllerSaleStore {
             double precioUnitario = Double.parseDouble(String.valueOf(tableModel.getValueAt(selectedRow, 3)));
             Object cantidadObj = tableModel.getValueAt(selectedRow, 4);
 
+             // Obtener el valor de stock mínimo
+            int stockMinimo = 5; // Valor por defecto
+            Object stockMinimoObj = tableModel.getValueAt(selectedRow, 5); // Suponiendo que la columna 5 es "Stock Minimo"
+            if (stockMinimoObj != null) {
+                stockMinimo = Integer.parseInt(stockMinimoObj.toString());
+            }
+            
             if (cantidadObj == null || cantidadObj.toString().trim().isEmpty()) {
                 JOptionPane.showMessageDialog(storeMenuSecond, "Por favor, ingrese una cantidad válida.");
                 return;
@@ -216,9 +259,22 @@ public class ControllerSaleStore {
                     Bson updateOperation = new Document("$set", new Document("Stock Actual", nuevoStock));
                     mongo.createConnection().getCollection("ProductsAdd").updateOne(filter, updateOperation);
 
-                // Actualizar el stock en la tabla
-                tableModel.setValueAt(nuevoStock, selectedRow, 2);
+                    // Actualizar el stock en la tabla
+                    tableModel.setValueAt(nuevoStock, selectedRow, 2);
 
+                    if (nuevoStock == 0) {
+                        // Eliminar la fila si el stock llega a cero
+                        tableModel.removeRow(selectedRow);
+                        JOptionPane.showMessageDialog(storeMenuSecond, 
+                            "El producto " + nombreP + " ha sido eliminado de la tabla por falta de stock.",
+                            "Información", JOptionPane.INFORMATION_MESSAGE);
+                    } else if (nuevoStock <= stockMinimo) {
+                        // Advertencia si el stock alcanza el mínimo
+                        JOptionPane.showMessageDialog(storeMenuSecond, 
+                            "El producto " + nombreP + " ha alcanzado su stock mínimo (" + stockMinimo + "). ¡Realice un nuevo pedido!",
+                            "Advertencia", JOptionPane.WARNING_MESSAGE);
+                        }
+                
                 JOptionPane.showMessageDialog(storeMenuSecond, "Producto aniadido al carrito. Precio total: " + precioTotal);
             } else {
                 JOptionPane.showMessageDialog(storeMenuSecond, "Cantidad inválida. Debe ser mayor que 0 y menor o igual al stock actual. \n"
@@ -277,4 +333,15 @@ public class ControllerSaleStore {
         String categoria = "Lacteos";
         AjustarCategoria(categoria);
     }
+    
+    public void actualizarTablaPorStock() {
+    DefaultTableModel tableModel = (DefaultTableModel) storeMenuSecond.tabla.getModel();
+    for (int i = tableModel.getRowCount() - 1; i >= 0; i--) {
+        int stockActual = Integer.parseInt(String.valueOf(tableModel.getValueAt(i, 2)));
+        if (stockActual == 0) {
+            tableModel.removeRow(i);
+        }
+    }
+}
+    
 }
