@@ -116,12 +116,12 @@ public class ControllerStore implements ActionListener {
         this.menu.btnInventarioVenta.addActionListener(this);
         this.menu.btnSalir.addActionListener(this);
         this.facture.btnVolver.addActionListener(this);
-        this.menuAdmin.btnAddProduct.addActionListener(this);
         this.menuAdmin.btnAdministracion.addActionListener(this);
-        this.menuAdmin.btnFacturas.addActionListener(this);
-        this.menuAdmin.btnInventarioVenta.addActionListener(this);
         this.menuAdmin.btnSalir.addActionListener(this);
         this.admin.btnBuscar.addActionListener(this);
+        this.admin.btnEliminar.addActionListener(this);
+        this.admin.btnRecargarTabla.addActionListener(this);
+        this.admin.btnVolver.addActionListener(this);
         
         addProduct.tabla.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -508,7 +508,8 @@ public class ControllerStore implements ActionListener {
         }
 
         if (e.getSource() == addProduct.btnReturn) { //volver a la pagina principal
-            btnReturnMain();
+           login.setVisible(true);
+           addProduct.setVisible(false);
         }
 
         if (e.getSource() == addProduct.btnUpdate) { //actualizar
@@ -558,32 +559,28 @@ public class ControllerStore implements ActionListener {
             facture.setVisible(false);
             menu.setVisible(true);
         }
+        
         if (e.getSource() == menuAdmin.btnAdministracion) {
             menuAdmin.setVisible(false);
             admin.setVisible(true);
         }
-        if (e.getSource() == menuAdmin.btnAddProduct) {
-            menuAdmin.setVisible(false);
-            addProduct.setVisible(true);
-        } 
-        if (e.getSource() == menuAdmin.btnFacturas) {
-            menuAdmin.setVisible(false);
-            facture.setVisible(true);
-        }
-        if (e.getSource() == menuAdmin.btnInventarioVenta) {
-            menuAdmin.setVisible(false);
-            store.setVisible(true);
-        } 
         if (e.getSource() == menuAdmin.btnSalir) {
             menuAdmin.setVisible(false);
             login.setVisible(true);
         }
+        
         if (e.getSource() == admin.btnVolver) {
             admin.setVisible(false);
             menuAdmin.setVisible(true);
         }
         if (e.getSource() == admin.btnBuscar) {
             controllerAdmin.lookForUserAdmin();
+        }
+        if (e.getSource() == admin.btnEliminar) {
+            controllerAdmin.deleteUser();
+        }
+        if (e.getSource() == admin.btnRecargarTabla) {
+            controlSaleStore.cargarTabla();
         }
     }
 

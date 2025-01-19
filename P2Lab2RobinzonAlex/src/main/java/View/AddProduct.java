@@ -207,7 +207,12 @@ public class AddProduct extends javax.swing.JFrame {
 
         btnReturn.setBackground(new java.awt.Color(255, 102, 51));
         btnReturn.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        btnReturn.setText("Volver");
+        btnReturn.setText("Login");
+        btnReturn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReturnActionPerformed(evt);
+            }
+        });
         jPanel4.add(btnReturn, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 110, -1, -1));
 
         btnLimpiar.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
@@ -262,6 +267,10 @@ public class AddProduct extends javax.swing.JFrame {
     private void btnInventarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInventarioActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnInventarioActionPerformed
+
+    private void btnReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReturnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnReturnActionPerformed
 
     /**
      * @param args the command line arguments

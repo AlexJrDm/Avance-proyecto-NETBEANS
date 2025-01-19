@@ -17,6 +17,7 @@ Controller\ControllerStore.class
 View\AddProduct.class
 View\Login$2.class
 View\Registration$1.class
+View\AddProduct$5.class
 Model\ModelFacture.class
 View\AddProduct$3.class
 View\MainMenu.class

@@ -87,6 +87,28 @@ public class ControllerAdmin {
     }
     
     public void deleteUser() {
+        int rowSelected = admin.tabla.getSelectedRow();
+        if (rowSelected == -1) {
+            JOptionPane.showMessageDialog(admin, "Debe seleccionar un registro de la tabla para eliminar.",
+                    "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         
+        String dni = admin.tabla.getValueAt(rowSelected, 3).toString();
+        int confirmacion = JOptionPane.showConfirmDialog(admin, "¿Desea despedir a este empleado y eliminar todo registro sobre este?","Advertencia",
+                JOptionPane.YES_NO_OPTION);
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            Bson filter = Filters.eq("DNI", dni);
+            if (mongo.deleteDocument(filter)) {
+                JOptionPane.showMessageDialog(admin, "Registro eliminado correctamente.",
+                        "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                cargarTablaAdmin();
+            } else {
+                JOptionPane.showMessageDialog(admin, "El usuario no pudo ser eliminado","Error",
+                        JOptionPane.WARNING_MESSAGE);
+            }
+        } else {
+            System.out.println("[DEPURACION] este usuario no pudo ser eliminado");
+        }
     }
 }

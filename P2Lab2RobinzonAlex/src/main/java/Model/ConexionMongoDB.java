@@ -123,6 +123,20 @@ public class ConexionMongoDB {
             return false;
         }
     }
+    
+    public boolean deleteDocument(Bson filter) {
+        try {
+            MongoDatabase db = createConnection();
+            if (db != null) {
+                MongoCollection<Document> collection = db.getCollection(collectionNameUser);
+                collection.deleteOne(filter);
+                return true;
+            }
+        }catch (MongoException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
     public boolean updateProductByUser(String userId, String codigo, Document updatedProduct) {
         try {
