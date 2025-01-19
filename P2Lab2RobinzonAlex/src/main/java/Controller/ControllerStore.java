@@ -236,7 +236,7 @@ public class ControllerStore implements ActionListener {
     }
 
     public void btnReturnMain() {
-        menu.setVisible(true);
+        login.setVisible(true);
         addProduct.setVisible(false);
         regis.setVisible(false);
     }
