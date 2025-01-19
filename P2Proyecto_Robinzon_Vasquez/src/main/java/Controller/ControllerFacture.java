@@ -4,10 +4,13 @@ import Model.ConexionMongoDB;
 import Model.ModelFacture;
 import Model.ModelProductCar;
 import View.FactureClients;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import org.bson.Document;
+import org.json.simple.JSONObject;
 
 public class ControllerFacture {
     private ConexionMongoDB mongo = new ConexionMongoDB();
@@ -59,7 +62,20 @@ public class ControllerFacture {
                 .append("Email", facture.getEmail())
                 .append("Numero de telefono", facture.getCellPhone())
                 .append("Compras", productos);
-
+        //AGREGA LOS DATOS AL JSON
+        JSONObject json = new JSONObject();
+            json.put("Apellidos", facture.getLastNames());
+            json.put("Nombres", facture.getNames());
+            json.put("Direccion", facture.getAddres());
+            json.put("Cedula", facture.getDni());
+            json.put("Email", facture.getEmail());
+            json.put("Numero de telefono", facture.getCellPhone());
+            json.put("Compras", productos);
+            try (FileWriter file = new FileWriter("Facturas.json", true)){
+                file.write(json.toString()+"\n");
+            }catch (IOException e) {
+                System.out.println("Error al generar archivo json");
+            }
         // Guardar el documento del cliente en la colección Clients
         if (mongo.createDocumentClients(clienteDoc)) {
             System.out.println("[DEPURACION] Los datos del cliente y sus compras fueron guardados correctamente.");

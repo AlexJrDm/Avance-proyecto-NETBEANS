@@ -6,6 +6,8 @@ import View.FactureClients;
 import View.SaleStore;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -231,6 +233,16 @@ public class ControllerSaleStore {
                     productoCarrito.getCantidad(),
                     productoCarrito.getPrecioVenta()
                 });
+                try (FileWriter writer = new FileWriter("ProductosComprados.csv",true)){
+                    writer.write("Productos Comprados");
+                    writer.write("Nombre producto: " + productoCarrito.getNombreProducto());
+                    writer.write("Categoria" + productoCarrito.getCategoria());
+                    writer.write("Cantidad: " + productoCarrito.getCantidad());
+                    writer.write("Precio de esta venta: " + productoCarrito.getPrecioVenta());
+                    System.out.println("[DEPURACION] producto agregado correctamente a archivo csv");
+                }catch (IOException e) {
+                    System.out.println("[DEPURACION] error al crear el archivo csv");
+                }
             } else {
                 // Actualizar la tabla del carrito
                 DefaultTableModel tableCarrito = (DefaultTableModel) storeMenuSecond.TablaCarrito.getModel();
