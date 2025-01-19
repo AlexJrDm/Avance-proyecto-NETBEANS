@@ -94,7 +94,6 @@ public class ControllerStore implements ActionListener {
         this.controlSaleStore.storeMenuSecond.itemMascotas.addActionListener(this);
         this.controlSaleStore.storeMenuSecond.itemLacteos.addActionListener(this);
         this.controlSaleStore.storeMenuSecond.btnAddToCar.addActionListener(this);
-        this.controlSaleStore.storeMenuSecond.btnCancelar.addActionListener(this);
         this.controlSaleStore.storeMenuSecond.btnCloseBuys.addActionListener(this);
         this.login.lblRegistrarse.addMouseListener(new MouseAdapter() {
             @Override
@@ -126,6 +125,7 @@ public class ControllerStore implements ActionListener {
         this.admin.btnRecargarTabla.addActionListener(this);
         this.admin.btnVolver.addActionListener(this);
         this.facture.btnFactura.addActionListener(this);
+        this.controlSaleStore.storeMenuSecond.btnEliminarCompra.addActionListener(this);
         
         addProduct.tabla.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -403,9 +403,6 @@ public class ControllerStore implements ActionListener {
                 JOptionPane.showMessageDialog(addProduct, "Registro eliminado correctamente.",
                         "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 loadTable(currentUserId);
-            } else {
-                JOptionPane.showMessageDialog(addProduct, "Error al eliminar el registro. Intente nuevamente.",
-                        "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
         cleanDataAddProducts();
@@ -461,9 +458,6 @@ public class ControllerStore implements ActionListener {
         if (e.getSource() == controlSaleStore.storeMenuSecond.btnAddToCar) {
             System.out.println("");
             controlSaleStore.addProductToCar();
-        }
-        if (e.getSource() == controlSaleStore.storeMenuSecond.btnCancelar) {
-            
         }
         if (e.getSource() == regis.btnRegistrations) { //boton de registro
             registerUser();
@@ -559,6 +553,7 @@ public class ControllerStore implements ActionListener {
         if (e.getSource() ==menu.btnInventarioVenta) {
             System.out.println("Ingreso a la venta exitoso para el usuario");
             loginUser();
+            controlSaleStore.cargarTabla();
             controlSaleStore.storeMenuSecond.setVisible(true);
             login.setVisible(false);
             menu.setVisible(false);
@@ -597,6 +592,9 @@ public class ControllerStore implements ActionListener {
         if (e.getSource() == facture.btnFactura) {
             System.out.println("Imprimir factura de clientes");
             controllerFacture.factura();
+        }
+        if (e.getSource() == controlSaleStore.storeMenuSecond.btnEliminarCompra) {
+            controlSaleStore.deleteProductToCar();
         }
     }
 

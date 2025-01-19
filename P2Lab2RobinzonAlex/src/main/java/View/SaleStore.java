@@ -24,7 +24,6 @@ public class SaleStore extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         btnAddToCar = new javax.swing.JButton();
-        btnCancelar = new javax.swing.JButton();
         btnVolver = new javax.swing.JButton();
         btnCloseBuys = new javax.swing.JButton();
         rbtnSi = new javax.swing.JRadioButton();
@@ -44,7 +43,7 @@ public class SaleStore extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         TablaCarrito = new javax.swing.JTable();
         jPanel7 = new javax.swing.JPanel();
-        jButton4 = new javax.swing.JButton();
+        btnEliminarCompra = new javax.swing.JButton();
         MenuBar = new javax.swing.JMenuBar();
         menuRecarga = new javax.swing.JMenu();
         itemRecarga = new javax.swing.JMenuItem();
@@ -125,16 +124,11 @@ public class SaleStore extends javax.swing.JFrame {
         });
         jPanel5.add(btnAddToCar, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 10, 140, -1));
 
-        btnCancelar.setBackground(new java.awt.Color(255, 102, 102));
-        btnCancelar.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        btnCancelar.setText("Cancelar");
-        jPanel5.add(btnCancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 40, -1, -1));
-
         btnVolver.setBackground(new java.awt.Color(204, 255, 255));
         btnVolver.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         btnVolver.setForeground(new java.awt.Color(0, 0, 153));
         btnVolver.setText("Volver");
-        jPanel5.add(btnVolver, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, -1, -1));
+        jPanel5.add(btnVolver, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 80, -1, -1));
 
         btnCloseBuys.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         btnCloseBuys.setText("Terminar Compra");
@@ -143,7 +137,7 @@ public class SaleStore extends javax.swing.JFrame {
                 btnCloseBuysActionPerformed(evt);
             }
         });
-        jPanel5.add(btnCloseBuys, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 70, -1, -1));
+        jPanel5.add(btnCloseBuys, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 50, -1, -1));
 
         jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 250, 310, 110));
 
@@ -238,8 +232,8 @@ public class SaleStore extends javax.swing.JFrame {
 
         jPanel7.setBackground(new java.awt.Color(255, 153, 102));
 
-        jButton4.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jButton4.setText("Eliminar producto del carrito");
+        btnEliminarCompra.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        btnEliminarCompra.setText("Eliminar producto del carrito");
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -247,12 +241,12 @@ public class SaleStore extends javax.swing.JFrame {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGap(51, 51, 51)
-                .addComponent(jButton4)
+                .addComponent(btnEliminarCompra)
                 .addContainerGap(52, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+            .addComponent(btnEliminarCompra, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
         );
 
         jPanel1.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 530, 310, 30));
@@ -434,8 +428,8 @@ public class SaleStore extends javax.swing.JFrame {
     public javax.swing.JTable TablaCarrito;
     public javax.swing.JButton btnAddToCar;
     public javax.swing.JButton btnBuscarProducto;
-    public javax.swing.JButton btnCancelar;
     public javax.swing.JButton btnCloseBuys;
+    public javax.swing.JButton btnEliminarCompra;
     public javax.swing.JButton btnVolver;
     public javax.swing.JMenuItem itemAlacena;
     public javax.swing.JMenuItem itemAseoHogar;
@@ -447,7 +441,6 @@ public class SaleStore extends javax.swing.JFrame {
     public javax.swing.JMenuItem itemLegumbres;
     public javax.swing.JMenuItem itemMascotas;
     public javax.swing.JMenuItem itemRecarga;
-    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

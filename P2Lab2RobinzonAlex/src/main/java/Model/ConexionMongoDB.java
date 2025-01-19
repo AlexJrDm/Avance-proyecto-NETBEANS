@@ -55,6 +55,10 @@ public class ConexionMongoDB {
     public MongoCollection<Document> getCollectionCar() {
         return database.getCollection("CarritoDeCompras");
     }
+    
+    public MongoCollection<Document> getCollectionProductsAdd() {
+        return database.getCollection("ProductsAdd");
+    }
 
     public MongoDatabase createConnection() {
         try {
@@ -158,6 +162,21 @@ public class ConexionMongoDB {
             }
         }catch (MongoException e) {
             e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public boolean deleteDocumentFromCar(Bson filter) {
+        try {
+            MongoDatabase database = createConnection();
+            if (database != null) {
+                MongoCollection<Document> collection = getCollectionCar();
+                collection.deleteOne(filter);
+                return true;
+            }
+        } catch (MongoException e) {
+            e.printStackTrace();
+            
         }
         return false;
     }

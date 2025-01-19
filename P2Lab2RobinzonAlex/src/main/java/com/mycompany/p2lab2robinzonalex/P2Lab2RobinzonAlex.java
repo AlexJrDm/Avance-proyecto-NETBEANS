@@ -31,9 +31,11 @@ public class P2Lab2RobinzonAlex {
         FactureClients factura = new FactureClients();
         Admin admin = new Admin();
         MenuAdmin menuAdmin = new MenuAdmin();
-        ControllerSaleStore controlSaleStore = new ControllerSaleStore(storeMenuSecond, mongo);
+        
+        
         ControllerAdmin controllerAdmin = new ControllerAdmin(mongo, admin);
         ControllerFacture controllerFacture = new ControllerFacture(factura);
+        ControllerSaleStore controlSaleStore = new ControllerSaleStore(storeMenuSecond, mongo, controllerFacture);
         ControllerStore control = new ControllerStore(addProduct, productModel, 
                 login, regis, userController, recover, storeMenuSecond, controlSaleStore, menu, factura, controllerAdmin,
         menuAdmin, admin, controllerFacture);
