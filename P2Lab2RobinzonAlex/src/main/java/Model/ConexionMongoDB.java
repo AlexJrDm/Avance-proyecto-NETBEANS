@@ -285,4 +285,18 @@ public class ConexionMongoDB {
         return allProducts;
     }
 
+    public List<Document> getAllUsersFromStore() {
+        List<Document> allProducts = new ArrayList<>();
+        MongoCollection<Document> collection = database.getCollection(collectionNameUser);
+        MongoCursor<Document> cursor = collection.find().iterator();
+        try {
+            while (cursor.hasNext()) {
+                allProducts.add(cursor.next());
+            }
+        } finally {
+            cursor.close();
+        }
+        return allProducts;
+    }
+    
 }

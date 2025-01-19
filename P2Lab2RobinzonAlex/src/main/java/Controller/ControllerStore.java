@@ -40,12 +40,13 @@ public class ControllerStore implements ActionListener {
     private ControllerSaleStore controlSaleStore;
     private MainMenu menu;
     private FactureClients facture;
+    private ControllerAdmin controllerAdmin;
 
     private String currentUserId;
 
     public ControllerStore(AddProduct addProduct, Products productModel, Login login, Registration regis,
             ControllerUser userController, RecoverPassword recover, SaleStore store,
-            ControllerSaleStore controlSaleStore, MainMenu menu, FactureClients facture) {
+            ControllerSaleStore controlSaleStore, MainMenu menu, FactureClients facture, ControllerAdmin controllerAdmin) {
         this.addProduct = addProduct;
         this.productModel = productModel;
         this.login = login;
@@ -56,6 +57,7 @@ public class ControllerStore implements ActionListener {
         this.controlSaleStore = controlSaleStore;
         this.menu = menu;
         this.facture = facture;
+        this.controllerAdmin = controllerAdmin;
 
         cleanDataAddProducts();
         cleanValidations();
