@@ -109,7 +109,7 @@ public class MainMenu extends javax.swing.JFrame {
 
         jPanel1.add(jPanel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 140, 980, 240));
 
-        btnSalir.setBackground(new java.awt.Color(255, 0, 51));
+        btnSalir.setBackground(new java.awt.Color(255, 204, 204));
         btnSalir.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         btnSalir.setText("Login");
         jPanel1.add(btnSalir, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 420, -1, -1));

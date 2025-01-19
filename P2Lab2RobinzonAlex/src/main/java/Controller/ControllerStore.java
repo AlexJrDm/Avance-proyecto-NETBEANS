@@ -121,6 +121,7 @@ public class ControllerStore implements ActionListener {
         this.menuAdmin.btnFacturas.addActionListener(this);
         this.menuAdmin.btnInventarioVenta.addActionListener(this);
         this.menuAdmin.btnSalir.addActionListener(this);
+        this.admin.btnBuscar.addActionListener(this);
         
         addProduct.tabla.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -464,19 +465,18 @@ public class ControllerStore implements ActionListener {
             String passwordInput = new String(login.password.getPassword());
 
             // Verificar si es administrador
-            if (userController.loginAdmin(userInput, passwordInput)) {
+            if (userController.loginAdmin(userInput.trim(), passwordInput.trim())) {
                 System.out.println("Bienvenido, administrador.");
                 login.setVisible(false);
                 menuAdmin.setVisible(true); // Supongamos que el menú principal también es para el administrador
             } else {
                 // Si no es administrador, intentar como usuario normal
                 if (userController.login(userInput, passwordInput)) {
-                    System.out.println("Inicio de sesión exitoso como usuario.");
+                    System.out.println("Inicio de sesion exitoso como usuario.");
                     login.setVisible(false);
                     menu.setVisible(true); // Menú principal para usuarios
                 } else {
-                    JOptionPane.showMessageDialog(login, "Usuario o contraseña incorrectos.", 
-                                                  "Error de inicio de sesión", JOptionPane.ERROR_MESSAGE);
+                    System.out.println("[DEPURACION] no se ha podido encontrar cuenta con tales credenciales");
                 }
             }
  
@@ -559,7 +559,31 @@ public class ControllerStore implements ActionListener {
             menu.setVisible(true);
         }
         if (e.getSource() == menuAdmin.btnAdministracion) {
+            menuAdmin.setVisible(false);
             admin.setVisible(true);
+        }
+        if (e.getSource() == menuAdmin.btnAddProduct) {
+            menuAdmin.setVisible(false);
+            addProduct.setVisible(true);
+        } 
+        if (e.getSource() == menuAdmin.btnFacturas) {
+            menuAdmin.setVisible(false);
+            facture.setVisible(true);
+        }
+        if (e.getSource() == menuAdmin.btnInventarioVenta) {
+            menuAdmin.setVisible(false);
+            store.setVisible(true);
+        } 
+        if (e.getSource() == menuAdmin.btnSalir) {
+            menuAdmin.setVisible(false);
+            login.setVisible(true);
+        }
+        if (e.getSource() == admin.btnVolver) {
+            admin.setVisible(false);
+            menuAdmin.setVisible(true);
+        }
+        if (e.getSource() == admin.btnBuscar) {
+            controllerAdmin.lookForUserAdmin();
         }
     }
 
