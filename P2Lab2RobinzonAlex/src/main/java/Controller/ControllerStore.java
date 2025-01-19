@@ -6,9 +6,11 @@ import Model.RecoverPass;
 import Model.SellerLogin;
 import Model.SellerRegiste;
 import View.AddProduct;
+import View.Admin;
 import View.FactureClients;
 import View.Login;
 import View.MainMenu;
+import View.MenuAdmin;
 import View.RecoverPassword;
 import View.Registration;
 import View.SaleStore;
@@ -41,12 +43,14 @@ public class ControllerStore implements ActionListener {
     private MainMenu menu;
     private FactureClients facture;
     private ControllerAdmin controllerAdmin;
+    private MenuAdmin menuAdmin;
+    private Admin admin;
 
     private String currentUserId;
 
     public ControllerStore(AddProduct addProduct, Products productModel, Login login, Registration regis,
             ControllerUser userController, RecoverPassword recover, SaleStore store,
-            ControllerSaleStore controlSaleStore, MainMenu menu, FactureClients facture, ControllerAdmin controllerAdmin) {
+            ControllerSaleStore controlSaleStore, MainMenu menu, FactureClients facture, ControllerAdmin controllerAdmin, MenuAdmin menuAdmin, Admin admin) {
         this.addProduct = addProduct;
         this.productModel = productModel;
         this.login = login;
@@ -58,6 +62,8 @@ public class ControllerStore implements ActionListener {
         this.menu = menu;
         this.facture = facture;
         this.controllerAdmin = controllerAdmin;
+        this.menuAdmin = menuAdmin;
+        this.admin = admin;
 
         cleanDataAddProducts();
         cleanValidations();
@@ -110,7 +116,12 @@ public class ControllerStore implements ActionListener {
         this.menu.btnInventarioVenta.addActionListener(this);
         this.menu.btnSalir.addActionListener(this);
         this.facture.btnVolver.addActionListener(this);
-
+        this.menuAdmin.btnAddProduct.addActionListener(this);
+        this.menuAdmin.btnAdministracion.addActionListener(this);
+        this.menuAdmin.btnFacturas.addActionListener(this);
+        this.menuAdmin.btnInventarioVenta.addActionListener(this);
+        this.menuAdmin.btnSalir.addActionListener(this);
+        
         addProduct.tabla.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -449,8 +460,26 @@ public class ControllerStore implements ActionListener {
         }
 
         if (e.getSource() == login.btnLogin) { //boton de iniciar sesión
-            loginUser();
-            
+            String userInput = login.txtUser.getText();
+            String passwordInput = new String(login.password.getPassword());
+
+            // Verificar si es administrador
+            if (userController.loginAdmin(userInput, passwordInput)) {
+                System.out.println("Bienvenido, administrador.");
+                login.setVisible(false);
+                menuAdmin.setVisible(true); // Supongamos que el menú principal también es para el administrador
+            } else {
+                // Si no es administrador, intentar como usuario normal
+                if (userController.login(userInput, passwordInput)) {
+                    System.out.println("Inicio de sesión exitoso como usuario.");
+                    login.setVisible(false);
+                    menu.setVisible(true); // Menú principal para usuarios
+                } else {
+                    JOptionPane.showMessageDialog(login, "Usuario o contraseña incorrectos.", 
+                                                  "Error de inicio de sesión", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+ 
         }
         if (e.getSource() == login.btnExit) { //boton de salida
             btnExit();
@@ -528,6 +557,9 @@ public class ControllerStore implements ActionListener {
         if (e.getSource() == facture.btnVolver) {
             facture.setVisible(false);
             menu.setVisible(true);
+        }
+        if (e.getSource() == menuAdmin.btnAdministracion) {
+            admin.setVisible(true);
         }
     }
 

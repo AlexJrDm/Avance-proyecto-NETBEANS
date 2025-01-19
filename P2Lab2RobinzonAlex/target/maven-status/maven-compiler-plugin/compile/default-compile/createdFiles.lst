@@ -31,6 +31,7 @@ Model\ModelProductCar.class
 Controller\ControllerStore$3.class
 View\RecoverPassword.class
 View\AddProduct$2.class
+View\MenuAdmin$1.class
 View\SaleStore$2.class
 Controller\ControllerFacture.class
 View\Registration$4.class
@@ -49,4 +50,5 @@ View\AddProduct$1.class
 View\FactureClients$1.class
 Model\ConexionMongoDB.class
 View\Registration$3.class
+View\MenuAdmin.class
 View\SaleStore$1.class

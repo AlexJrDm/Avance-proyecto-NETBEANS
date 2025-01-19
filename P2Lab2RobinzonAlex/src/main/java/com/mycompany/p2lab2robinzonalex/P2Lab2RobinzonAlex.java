@@ -11,6 +11,7 @@ import View.Admin;
 import View.FactureClients;
 import View.Login;
 import View.MainMenu;
+import View.MenuAdmin;
 import View.RecoverPassword;
 import View.Registration;
 import View.SaleStore;
@@ -28,10 +29,12 @@ public class P2Lab2RobinzonAlex {
         MainMenu menu = new MainMenu();
         FactureClients factura = new FactureClients();
         Admin admin = new Admin();
+        MenuAdmin menuAdmin = new MenuAdmin();
         ControllerSaleStore controlSaleStore = new ControllerSaleStore(storeMenuSecond, mongo);
         ControllerAdmin controllerAdmin = new ControllerAdmin(mongo, admin);
         ControllerStore control = new ControllerStore(addProduct, productModel, 
-                login, regis, userController, recover, storeMenuSecond, controlSaleStore, menu, factura, controllerAdmin);
+                login, regis, userController, recover, storeMenuSecond, controlSaleStore, menu, factura, controllerAdmin,
+        menuAdmin, admin);
         control.startViewLogin();
     }
 }

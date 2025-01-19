@@ -10,6 +10,9 @@ import org.bson.types.ObjectId;
 public class ControllerUser {
     private ConexionMongoDB mongo = new ConexionMongoDB();
     
+    private static final String ADMIN_USER = "admin";
+    private static final String ADMIN_PASSWORD = "admin";
+    
     //método para registrar USUARIOS en mongo
     public String registerUser(SellerRegiste user){
         Document doc = new Document("Names", user.getNames())
@@ -29,31 +32,40 @@ public class ControllerUser {
         }
     }
     
-    //método para iniciar sesión
-    public boolean login(String userInput, String passwordInput){
-        Document filter = new Document("User", userInput);
-        List<Document> resultados = mongo.readDocument(filter);
-
-    if (resultados != null && !resultados.isEmpty()) {
-        String storedPassword = resultados.get(0).getString("Password");
-        if (storedPassword.equals(passwordInput)) {
-            System.out.println("[INFO] Inicio de sesion exitoso para: " + userInput);
+    public boolean loginAdmin(String userInput, String passwordInput) {
+        if (ADMIN_USER.equals(userInput) && ADMIN_PASSWORD.equals(passwordInput)) {
+            System.out.println("[INFO] Inicio de sesión exitoso como administrador");
             return true;
         } else {
-            System.out.println("[ERROR] Contrasenia incorrecta");
+            System.out.println("[ERROR] Credenciales de administrador incorrectas");
             return false;
         }
-    } else {
-        System.out.println("[ERROR] Usuario no encontrado");
-        return false;
     }
+
+    
+    //método para iniciar sesión
+    public boolean login(String userInput, String passwordInput){
+            Document filter = new Document("User", userInput);
+            List<Document> resultados = mongo.readDocument(filter);
+
+        if (resultados != null && !resultados.isEmpty()) {
+            String storedPassword = resultados.get(0).getString("Password");
+            if (storedPassword.equals(passwordInput)) {
+                System.out.println("[INFO] Inicio de sesion exitoso para: " + userInput);
+                return true;
+            } else {
+                System.out.println("[ERROR] Contrasenia incorrecta");
+                return false;
+            }
+        } else {
+            System.out.println("[ERROR] Usuario no encontrado");
+            return false;
+        }
     }
     
-    public void loginAdmin() {
-        
-    }
     
-     // Obtener todos los usuarios registrados
+    
+    // Obtener todos los usuarios registrados
     public List<SellerRegiste> getRegisteredUsers() {
         List<SellerRegiste> users = new ArrayList<>();
         List<Document> documentos = mongo.readDocument(new Document());
