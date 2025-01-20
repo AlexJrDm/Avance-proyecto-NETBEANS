@@ -43,8 +43,8 @@ public class ControllerFacture {
             double precioVenta = producto.getDouble("Precio Venta");
             productosElegidos.append(nombreProducto).append(" - Precio: ").append(precioVenta).append("\n");
             totalAPagar += precioVenta; // Sumar el precio total
-            
         }
+        
 
         // Obtener datos del cliente desde la interfaz
         facture.setLastNames(factureClients.txtLastNames.getText());
@@ -96,6 +96,35 @@ public class ControllerFacture {
 
         // Mostrar la factura en el textArea
         factureClients.txtProductos.setText(mensaje);
+            // Mostrar la factura en un JOptionPane
+            JOptionPane.showMessageDialog(
+            factureClients, 
+            mensaje, 
+            "Factura Generada", 
+            JOptionPane.INFORMATION_MESSAGE
+            );
    }
+    
+    public double calcularTotalFactura(Document factura) {
+        if (factura == null) {
+            System.out.println("[ERROR] La factura proporcionada es nula.");
+            return 0.0; // Retornar 0 si no se proporciona una factura válida
+        }
+
+        double total = 0.0;
+
+        @SuppressWarnings("unchecked")
+        List<Document> productos = (List<Document>) factura.get("Productos");
+        if (productos != null) {
+                for (Document producto : productos) {
+                    double precioVenta = producto.getDouble("Precio Venta");
+                    total += precioVenta; // Sumar el precio de cada producto
+                }
+            } else {
+                System.out.println("[ERROR] La factura no contiene productos.");
+            }
+
+            return total;
+    }   
      
 }

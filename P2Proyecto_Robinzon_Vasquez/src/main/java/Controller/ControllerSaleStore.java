@@ -22,13 +22,15 @@ public class ControllerSaleStore {
     SaleStore storeMenuSecond;
     ConexionMongoDB mongo;
     FactureClients facture;
+    ControllerFacture controlFacture;
     
     private List<ModelProductCar> carrito = new ArrayList<>();
 
-    public ControllerSaleStore(SaleStore storeMenuSecond, ConexionMongoDB mongo, FactureClients facture) {
+    public ControllerSaleStore(SaleStore storeMenuSecond, ConexionMongoDB mongo, FactureClients facture, ControllerFacture controlFacture) {
         this.storeMenuSecond = storeMenuSecond;
         this.mongo = mongo;
         this.facture = facture;
+        this.controlFacture = controlFacture;
         mongo.createConnection();
         mongo.getCollectionInv();
         
@@ -44,9 +46,44 @@ public class ControllerSaleStore {
          if (storeMenuSecond.rbtnSi.isSelected()) { // Verificar si el botón de radio está seleccionado
             facture.setVisible(true); // Mostrar la vista de facturación
             storeMenuSecond.setVisible(false); // Ocultar la vista de la tienda
+        } else if (storeMenuSecond.rbtnNo.isSelected()){
+            // Mostrar mensaje de éxito si el botón "No" está seleccionado
+            JOptionPane.showMessageDialog(
+                storeMenuSecond, 
+                "La venta se ha realizado con éxito", 
+                "Éxito", 
+                JOptionPane.INFORMATION_MESSAGE
+            );
+        
+            // Recuperar la última factura
+            Document factura = mongo.getCollectionCarBuys().find().sort(new Document("_id", -1)).first();
+        
+            if (factura != null) {
+                // Calcular y mostrar el total de la factura
+                double total = controlFacture.calcularTotalFactura(factura);
+                JOptionPane.showMessageDialog(
+                    storeMenuSecond, 
+                    "El total de la factura es: $" + total, 
+                    "Total de la Factura", 
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+            } else {
+                // Manejar el caso de factura no encontrada
+                JOptionPane.showMessageDialog(
+                    storeMenuSecond, 
+                    "No se encontró ninguna factura reciente.", 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
         } else {
-            JOptionPane.showMessageDialog(storeMenuSecond, "La venta se ha realizado con éxito", "Éxito",
-                    JOptionPane.INFORMATION_MESSAGE);
+             // Mostrar advertencia si no se seleccionó ninguna opción
+            JOptionPane.showMessageDialog(
+                facture, 
+                "Debe seleccionar una opción de la factura.", 
+                "Error", 
+                JOptionPane.WARNING_MESSAGE
+             );
         }
     }
     
