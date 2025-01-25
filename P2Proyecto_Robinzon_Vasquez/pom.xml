@@ -33,11 +33,17 @@
             <version>4.9.1</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>forms</artifactId>
+            <version>7.2.3</version>
+        </dependency>
     </dependencies>
+    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <exec.mainClass>com.mycompany.p2lab2robinzonalex.P2Lab2RobinzonAlex</exec.mainClass>
     </properties>
     <name>P2Proyecto_Robinzon_Vasquez</name>

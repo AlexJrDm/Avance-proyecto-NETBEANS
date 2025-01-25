@@ -190,17 +190,17 @@ public class SaleStore extends javax.swing.JFrame {
 
         tabla.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Nombre Producto", "Categoria", "Cantidad", "Valor Unitario", "Cantidad Pedido"
+                "Código", "Nombre Producto", "Categoria", "Cantidad", "Precio Venta", "Cantidad Pedido"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                true, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -217,13 +217,13 @@ public class SaleStore extends javax.swing.JFrame {
 
         TablaCarrito.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Nombre Producto", "Categoria", "Cantidad", "Precio de la venta"
+                "Código", "Nombre Producto", "Categoria", "Cantidad", "Precio de la venta"
             }
         ));
         jScrollPane1.setViewportView(TablaCarrito);

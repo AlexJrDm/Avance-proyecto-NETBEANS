@@ -54,7 +54,6 @@ public class FactureClients extends javax.swing.JFrame {
         txtEmail = new javax.swing.JTextField();
         txtDni = new javax.swing.JTextField();
         txtAddress = new javax.swing.JTextField();
-        jLabel11 = new javax.swing.JLabel();
         lblErrorLastNames = new javax.swing.JLabel();
         lblErrorEmail = new javax.swing.JLabel();
         lblErrorDni = new javax.swing.JLabel();
@@ -64,6 +63,7 @@ public class FactureClients extends javax.swing.JFrame {
         lblErrorCell = new javax.swing.JLabel();
         btnVolver = new javax.swing.JButton();
         lblErrorDireccion = new javax.swing.JLabel();
+        cbDireccionEmail = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -240,25 +240,39 @@ public class FactureClients extends javax.swing.JFrame {
 
         jLabel9.setText("Cédula");
         jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 270, -1, -1));
-        jPanel1.add(txtEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 440, 300, -1));
+        jPanel1.add(txtEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 440, 150, -1));
         jPanel1.add(txtDni, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 300, 220, -1));
         jPanel1.add(txtAddress, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 300, 300, -1));
-        jPanel1.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 440, 300, 20));
+
+        lblErrorLastNames.setForeground(new java.awt.Color(255, 0, 0));
         jPanel1.add(lblErrorLastNames, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 240, 300, 20));
+
+        lblErrorEmail.setForeground(new java.awt.Color(255, 0, 0));
         jPanel1.add(lblErrorEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 480, 300, 20));
+
+        lblErrorDni.setForeground(new java.awt.Color(255, 0, 0));
         jPanel1.add(lblErrorDni, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 340, 220, 20));
+
+        lblErrorNames.setForeground(new java.awt.Color(255, 0, 0));
         jPanel1.add(lblErrorNames, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 240, 220, 20));
 
         jLabel16.setText("Teléfono");
         jPanel1.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 400, -1, -1));
         jPanel1.add(txtCellPhone, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 440, 220, -1));
+
+        lblErrorCell.setForeground(new java.awt.Color(255, 0, 0));
         jPanel1.add(lblErrorCell, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 480, 220, 20));
 
         btnVolver.setBackground(new java.awt.Color(255, 51, 0));
         btnVolver.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         btnVolver.setText("Salir");
         jPanel1.add(btnVolver, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 530, -1, -1));
+
+        lblErrorDireccion.setForeground(new java.awt.Color(255, 0, 0));
         jPanel1.add(lblErrorDireccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 340, 300, 20));
+
+        cbDireccionEmail.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "@email.com", "@gmail.com", "@hotmail.com", "@icloud.com", "@outlook.com" }));
+        jPanel1.add(cbDireccionEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 440, 140, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -312,9 +326,9 @@ public class FactureClients extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton btnFactura;
     public javax.swing.JButton btnVolver;
+    public javax.swing.JComboBox<String> cbDireccionEmail;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

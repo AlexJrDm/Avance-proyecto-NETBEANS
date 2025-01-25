@@ -1,24 +1,30 @@
 package Model;
 
 import View.Registration;
+import com.mongodb.client.model.Filters;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import org.bson.Document;
+import org.bson.conversions.Bson;
 
 public class SellerRegiste extends User implements Interface{
     private String names;
     private String lastNames;
     private String dni;
     private String email;
+    private String direccionEmail;
     private List<Products> products; // Lista de productos
 
     boolean validConfirmation = true;
      
-    public SellerRegiste(String names, String lastNames, String user, String dni, String email, String password) {
+    public SellerRegiste(String names, String lastNames, String user, String dni, String email, String direccionEmail, String password) {
         super (user, password);
         this.names = names;
         this.lastNames = lastNames;
         this.dni = dni;
         this.email = email;
+        this.direccionEmail = direccionEmail;
     }
     
     // Getters y setters...
@@ -61,34 +67,51 @@ public class SellerRegiste extends User implements Interface{
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getDireccionEmail() {
+        return direccionEmail;
+    }
+
+    public void setDireccionEmail(String direccionEmail) {
+        this.direccionEmail = direccionEmail;
+    }
     
     @Override
     public void getData(){
         JOptionPane.showMessageDialog(null, "Vendedor registrado correctamente \n"+
                 "Usuario: "+ getUser()+"\n"+
                 "Nombres y apellidos: "+getNames()+" "+getLastNames()+"\n"+
-                "Correo: "+ getEmail()+"\n"+
+                "Correo: "+ getEmail()+ getDireccionEmail()+"\n"+
                 "Cedula: " + getDni()+"\n");
     }
     
     public boolean validationsRegist(Registration regis){
         System.out.println("[DEPURACION] Iniciando validacion del registro...");
         validConfirmation = true;
-        if (getNames().isEmpty()){
-            System.out.println("[DEPURACION] Names esta vacio");
-            regis.lblErrorNames.setText("*campo obligatorio*");
-            validConfirmation = false;
-        } else {
-            regis.lblErrorNames.setText("");
-        }
-        
-        if (getLastNames().isEmpty()){
-            System.out.println("[DEPURACION] LastNames esta vacio");
-            regis.lblErrorLastName.setText("*campo obligatorio*");
-            validConfirmation = false;
-        } else {
-            regis.lblErrorLastName.setText("");
-        }
+        if (getNames().isEmpty()) {
+        System.out.println("[DEPURACION] Names esta vacio");
+        regis.lblErrorNames.setText("*campo obligatorio*");
+        validConfirmation = false;
+    } else if (!getNames().matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+")) {
+        System.out.println("[DEPURACION] Names contiene caracteres no válidos");
+        regis.lblErrorNames.setText("*solo se permiten letras*");
+        validConfirmation = false;
+    } else {
+        regis.lblErrorNames.setText("");
+    }
+
+    // Validación para apellidos
+    if (getLastNames().isEmpty()) {
+        System.out.println("[DEPURACION] LastNames esta vacio");
+        regis.lblErrorLastName.setText("*campo obligatorio*");
+        validConfirmation = false;
+    } else if (!getLastNames().matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+")) {
+        System.out.println("[DEPURACION] LastNames contiene caracteres no válidos");
+        regis.lblErrorLastName.setText("*solo se permiten letras*");
+        validConfirmation = false;
+    } else {
+        regis.lblErrorLastName.setText("");
+    }
         
         if (getUser().isEmpty()){
             System.out.println("[DEPURACION] user esta vacio");
@@ -133,6 +156,29 @@ public class SellerRegiste extends User implements Interface{
         } else {
             regis.lblErrorPassword.setText("");
         }
+        
+        if (!regis.rbtnConfirmeRegistration.isSelected()) {
+            regis.lblErrorConfirmacion.setText("*debe confirmar el registro*");
+            validConfirmation = false;
+        } else {
+            regis.lblErrorConfirmacion.setText("");
+        }
+        
+        if (getDireccionEmail().equals("@email.com")) {
+            regis.lblErrorEmail.setText("*debe seleccionar una direccion de correo*");
+            validConfirmation = false;
+        } else {
+            regis.lblErrorEmail.setText("");
+        }
+        
         return validConfirmation;
     }
+    
+    public ArrayList searchDni() {
+        ConexionMongoDB mongo = new ConexionMongoDB();
+        Bson filter = Filters.eq("Email",getDni());
+        ArrayList<Document> resultados = mongo.searchDocument(filter);
+        return resultados;
+    }
+    
 }

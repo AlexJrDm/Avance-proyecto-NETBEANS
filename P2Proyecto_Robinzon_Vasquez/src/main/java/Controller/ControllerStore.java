@@ -32,7 +32,7 @@ public class ControllerStore implements ActionListener {
     private ConexionMongoDB mongo = new ConexionMongoDB();
     private Products productModel = new Products("", "", "", "", "", "", "", "");
     private SellerLogin loginSeller = new SellerLogin("", "");
-    private SellerRegiste registSeller = new SellerRegiste("", "", "", "", "", "");
+    private SellerRegiste registSeller = new SellerRegiste("","", "", "", "", "", "");
     private Login login = new Login();
     private Registration regis;
     private AddProduct addProduct;
@@ -70,6 +70,7 @@ public class ControllerStore implements ActionListener {
 
         cleanDataAddProducts();
         cleanValidations();
+        
         //configuracion de botones
         this.addProduct.btnCreate.addActionListener(this);
         this.addProduct.btnDelete.addActionListener(this);
@@ -126,6 +127,7 @@ public class ControllerStore implements ActionListener {
         this.admin.btnVolver.addActionListener(this);
         this.facture.btnFactura.addActionListener(this);
         this.controlSaleStore.storeMenuSecond.btnEliminarCompra.addActionListener(this);
+        this.admin.btnImprimirFacturasPDF.addActionListener(this);
         
         addProduct.tabla.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -257,21 +259,6 @@ public class ControllerStore implements ActionListener {
         }
 
         String codigo = addProduct.txtCode.getText().trim();
-
-        // Verificar si ya existe un documento con la misma cédula
-        Bson filtro = Filters.eq("Código", codigo);
-        ArrayList<Document> resultados = mongo.searchProductByUser(currentUserId, codigo);
-
-        System.out.println("Filtro para búsqueda: " + filtro.toBsonDocument());
-
-        if (resultados != null && !resultados.isEmpty()) {
-            cleanDataAddProducts();
-            cleanValidations();
-            JOptionPane.showMessageDialog(addProduct, "Ya existe un registro con la cédula ingresada.",
-                    "Error de validación", JOptionPane.WARNING_MESSAGE);
-            return; // Detener el proceso de guardado
-        }
-
         productModel.setCodeProducts(addProduct.txtCode.getText().trim());
         productModel.setNameProduct(addProduct.txtNombreProducto.getText().trim());
         productModel.setIva(addProduct.selIva.getSelectedItem().toString());
@@ -413,8 +400,21 @@ public class ControllerStore implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == controlSaleStore.storeMenuSecond.btnBuscarProducto) {
             System.out.println("BUSCANDO PRODUCTO...");
-            controlSaleStore.lookForProductsSecondMenu("");
+            controlSaleStore.lookForProductsSecondMenu();
         }
+        /*
+        if (e.getSource() == controlSaleStore.storeMenuSecond.btnBuscarProducto) {
+    System.out.println("BUSCANDO PRODUCTO...");
+
+    // Obtener los valores de los campos de texto
+    String nombreProducto = controlSaleStore.storeMenuSecond.txtProducto.getText().trim();
+    String codigoProducto = controlSaleStore.storeMenuSecond.txtCodigo.getText().trim(); // Asegúrate de que este campo exista
+    String categoriaProducto = controlSaleStore.storeMenuSecond.txtCategoria.getText().trim(); // Asegúrate de que este campo exista
+
+    // Llamar al método de búsqueda con los parámetros obtenidos
+    controlSaleStore.lookForProductsSecondMenu(nombreProducto, codigoProducto, categoriaProducto);
+}
+        */
         if (e.getSource() == controlSaleStore.storeMenuSecond.itemRecarga) {
             System.out.println("MENU DE RECARGA SELECCIONADO");
             controlSaleStore.cargarTabla();
@@ -478,14 +478,8 @@ public class ControllerStore implements ActionListener {
                 login.setVisible(false);
                 menuAdmin.setVisible(true); // Supongamos que el menú principal también es para el administrador
             } else {
-                // Si no es administrador, intentar como usuario normal
-                if (userController.login(userInput, passwordInput)) {
-                    System.out.println("Inicio de sesion exitoso como usuario.");
-                    login.setVisible(false);
-                    menu.setVisible(true); // Menú principal para usuarios
-                } else {
-                    System.out.println("[DEPURACION] no se ha podido encontrar cuenta con tales credenciales");
-                }
+                loginUser();
+                System.out.println("Inicio de sesion exitoso como usuario.");
             }
         }
         if (e.getSource() == login.btnExit) { //boton de salida
@@ -597,6 +591,15 @@ public class ControllerStore implements ActionListener {
         if (e.getSource() == controlSaleStore.storeMenuSecond.btnEliminarCompra) {
             controlSaleStore.deleteProductToCar();
         }
+        if (e.getSource() == admin.btnImprimirFacturasPDF) {
+            Document factura = mongo.getCollectionCarBuys().find().sort(new Document("_id", -1)).first();
+            if (factura != null) {  
+                //controllerFacture.exportarTodasLasFacturasAPdf();
+                controllerFacture.exportarFacturaAPdf(factura);
+            } else {
+            System.out.println("[ERROR] No se encontró ninguna factura reciente.");
+            }
+        }
     }
 
     public void cleanDatRegistrations(String userId) {
@@ -610,6 +613,7 @@ public class ControllerStore implements ActionListener {
         registSeller.setUser(regis.txtUser.getText().trim());
         registSeller.setDni(regis.txtDni.getText().trim());
         registSeller.setEmail(regis.txtEmail.getText().trim());
+        registSeller.setDireccionEmail(regis.cdDireccionEmail.getSelectedItem().toString());
         registSeller.setPassword(String.valueOf(regis.password.getPassword()).trim());
 
         if (registSeller.validationsRegist(regis)) {
@@ -646,15 +650,15 @@ public class ControllerStore implements ActionListener {
                     loadTable(currentUserId);
                 } else {
                     JOptionPane.showMessageDialog(login, "Usuario no encontrado.",
-                            "Error de inicio de sesión", JOptionPane.WARNING_MESSAGE);
+                            "Error de inicio de sesion", JOptionPane.WARNING_MESSAGE);
                 }
             } else {
                 JOptionPane.showMessageDialog(login, "Credenciales incorrectas.",
-                        "Error de inicio de sesión", JOptionPane.WARNING_MESSAGE);
+                        "Error de inicio de sesion", JOptionPane.WARNING_MESSAGE);
             }
         } else {
-            JOptionPane.showMessageDialog(login, "Por favor, corrija los campos inválidos.",
-                    "Error de validación", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(login, "Por favor, corrija los campos invalidos.",
+                    "Error de validacion", JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -668,9 +672,9 @@ public class ControllerStore implements ActionListener {
             boolean result = recoverPass.searchAccount();
 
             if (result) {
-                recover.txtAreaDatosRecuperados.setText("Usuario: " + recoverPass.getUser() + "\nContraseña: " + recoverPass.getPassword());
+                recover.txtAreaDatosRecuperados.setText("Usuario: " + recoverPass.getUser() + "\nContrasenia: " + recoverPass.getPassword());
             } else {
-                recover.txtAreaDatosRecuperados.setText("No se encontró ninguna cuenta con los datos proporcionados.");
+                recover.txtAreaDatosRecuperados.setText("No se encontro ninguna cuenta con los datos proporcionados.");
             }
         }
     }

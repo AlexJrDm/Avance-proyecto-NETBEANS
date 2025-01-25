@@ -4,6 +4,12 @@ import Model.ConexionMongoDB;
 import Model.ModelFacture;
 import Model.ModelProductCar;
 import View.FactureClients;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,7 +20,7 @@ import org.json.simple.JSONObject;
 
 public class ControllerFacture {
     private ConexionMongoDB mongo = new ConexionMongoDB();
-    private ModelFacture facture = new ModelFacture("", "", "", "", "", "");
+    private ModelFacture facture = new ModelFacture("","", "", "", "", "", "");
     private FactureClients factureClients;
     private double totalAPagar = 0.0; // Inicializar el total
     private List<ModelProductCar> carrito = new ArrayList<>();
@@ -51,6 +57,7 @@ public class ControllerFacture {
         facture.setNames(factureClients.txtNames.getText());
         facture.setAddres(factureClients.txtAddress.getText());
         facture.setDni(factureClients.txtDni.getText());
+        facture.setDireccionEmail(factureClients.cbDireccionEmail.getSelectedItem().toString());
         facture.setEmail(factureClients.txtEmail.getText());
         facture.setCellPhone(factureClients.txtCellPhone.getText());
 
@@ -58,7 +65,7 @@ public class ControllerFacture {
         Document clienteDoc = new Document("Apellidos", facture.getLastNames())
                 .append("Nombres", facture.getNames())
                 .append("Direccion", facture.getAddres())
-                .append("Cedula", facture.getDni())
+                .append("Cedula", facture.getDni()+facture.getDireccionEmail())
                 .append("Email", facture.getEmail())
                 .append("Numero de telefono", facture.getCellPhone())
                 .append("Compras", productos);
@@ -66,7 +73,7 @@ public class ControllerFacture {
         JSONObject json = new JSONObject();
             json.put("Apellidos", facture.getLastNames());
             json.put("Nombres", facture.getNames());
-            json.put("Direccion", facture.getAddres());
+            json.put("Direccion", facture.getAddres()+facture.getDireccionEmail());
             json.put("Cedula", facture.getDni());
             json.put("Email", facture.getEmail());
             json.put("Numero de telefono", facture.getCellPhone());
@@ -89,13 +96,14 @@ public class ControllerFacture {
                 "Nombres: " + facture.getNames() + "\n" +
                 "Dirección: " + facture.getAddres() + "\n" +
                 "Cédula: " + facture.getDni() + "\n" +
-                "Email: " + facture.getEmail() + "\n" +
+                "Email: " + facture.getEmail() + facture.getDireccionEmail() + "\n" +
                 "Celular: " + facture.getCellPhone() + "\n";
         String mensaje = datosCliente + "Productos Elegidos:\n" + productosElegidos.toString() +
                          "Total a Pagar: $" + totalAPagar;
 
-        // Mostrar la factura en el textArea
-        factureClients.txtProductos.setText(mensaje);
+        if (facture.validationsFacture(factureClients)) {
+            // Mostrar la factura en el textArea
+            factureClients.txtProductos.setText(mensaje);
             // Mostrar la factura en un JOptionPane
             JOptionPane.showMessageDialog(
             factureClients, 
@@ -103,6 +111,7 @@ public class ControllerFacture {
             "Factura Generada", 
             JOptionPane.INFORMATION_MESSAGE
             );
+        }
    }
     
     public double calcularTotalFactura(Document factura) {
@@ -126,5 +135,78 @@ public class ControllerFacture {
 
             return total;
     }   
+    
+    public void exportarTodasLasFacturasAPdf() {
+        MongoDatabase db = mongo.createConnection();
+        if (db == null) {
+            System.out.println("[ERROR] No se pudo conectar a la base de datos.");
+            return;
+        }
+
+        MongoCollection<Document> collection = db.getCollection("Clients");
+        for (Document factura : collection.find()) {
+            exportarFacturaAPdf(factura);
+        }
+}
+    
+    public void exportarFacturaAPdf(Document factura) {
+        if (factura == null) {
+            System.out.println("[ERROR] La factura proporcionada es nula.");
+            return;
+        }
+
+        String nombreArchivo = "Factura_" + factura.getObjectId("_id") + ".pdf"; // Usar el ID único de la factura para el nombre
+        try (PdfWriter writer = new PdfWriter(nombreArchivo);
+             PdfDocument pdf = new PdfDocument(writer);
+             com.itextpdf.layout.Document document = new com.itextpdf.layout.Document(pdf)) { // Cambiar a la clase correcta
+
+            // Encabezado del PDF
+            document.add(new Paragraph("Factura de Compra")
+                    .setFontSize(18)
+                    .setBold());
+
+            document.add(new Paragraph("ID de la Factura: " + factura.getObjectId("_id"))
+                    .setFontSize(12));
+
+            // Información del cliente
+            document.add(new Paragraph("Información del Cliente:")
+                    .setBold());
+            document.add(new Paragraph("Apellidos: " + factura.getString("Apellidos")));
+            document.add(new Paragraph("Nombres: " + factura.getString("Nombres")));
+            document.add(new Paragraph("Dirección: " + factura.getString("Direccion")));
+            document.add(new Paragraph("Cédula: " + factura.getString("Cedula")));
+            document.add(new Paragraph("Email: " + factura.getString("Email")));
+            document.add(new Paragraph("Número de Teléfono: " + factura.getString("Numero de telefono")));
+
+            // Tabla de productos
+            document.add(new Paragraph("Productos Comprados:")
+                    .setBold());
+            Table table = new Table(new float[]{4, 2}); // Columnas: Producto y Precio
+            table.addCell("Producto");
+            table.addCell("Precio ($)");
+
+            @SuppressWarnings("unchecked")
+            List<Document> productos = (List<Document>) factura.get("Productos");
+            if (productos != null) {
+                for (Document producto : productos) {
+                    table.addCell(producto.getString("NombreP"));
+                    table.addCell(String.valueOf(producto.getDouble("Precio Venta")));
+                }
+            }
+
+            document.add(table);
+
+            // Total a pagar
+            double total = calcularTotalFactura(factura);
+            document.add(new Paragraph("Total a Pagar: $" + total)
+                    .setBold()
+                    .setFontSize(14));
+
+            System.out.println("[INFO] Factura exportada a: " + nombreArchivo);
+
+        } catch (IOException e) {
+            System.out.println("[ERROR] Ocurrió un error al generar el PDF: " + e.getMessage());
+        }
+    }
      
 }

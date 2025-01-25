@@ -163,7 +163,7 @@ public class AddProduct extends javax.swing.JFrame {
         jLabel9.setText("Nombre del producto");
         jPanel5.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 70, -1, -1));
         jPanel5.add(txtNombreProducto, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 100, 140, -1));
-        jPanel5.add(lblErrorNombreProducto, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 70, 380, 20));
+        jPanel5.add(lblErrorNombreProducto, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 100, 380, 20));
 
         jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 550, 410));
 

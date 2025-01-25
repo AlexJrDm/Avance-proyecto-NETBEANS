@@ -54,6 +54,8 @@ public class Registration extends javax.swing.JFrame {
         lblErrorDni = new javax.swing.JLabel();
         lblErrorEmail = new javax.swing.JLabel();
         password = new javax.swing.JPasswordField();
+        lblErrorConfirmacion = new javax.swing.JLabel();
+        cdDireccionEmail = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -80,7 +82,7 @@ public class Registration extends javax.swing.JFrame {
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 0, -1, 500));
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Buying Happy.jpg"))); // NOI18N
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 100, -1, -1));
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 20, -1, -1));
 
         jLabel3.setText("Nombres");
         jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, -1, -1));
@@ -142,7 +144,7 @@ public class Registration extends javax.swing.JFrame {
         );
 
         jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 420, 290, 60));
-        jPanel1.add(lblErrorPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 340, 300, 20));
+        jPanel1.add(lblErrorPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 340, 300, 20));
         jPanel1.add(lblErrorNames, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 80, 310, 20));
         jPanel1.add(lblErrorLastName, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 130, 310, 20));
 
@@ -188,8 +190,14 @@ public class Registration extends javax.swing.JFrame {
 
         jPanel1.add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 30, 80, 10));
         jPanel1.add(lblErrorDni, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 240, 360, 20));
-        jPanel1.add(lblErrorEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 290, 270, 20));
+        jPanel1.add(lblErrorEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 290, 270, 20));
         jPanel1.add(password, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 340, 160, -1));
+
+        lblErrorConfirmacion.setForeground(new java.awt.Color(255, 0, 0));
+        jPanel1.add(lblErrorConfirmacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 376, 320, 20));
+
+        cdDireccionEmail.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "@email.com", "@gmail.com", "@hotmail.com", "@icloud.com", "@outlook.com" }));
+        jPanel1.add(cdDireccionEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 290, 170, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -255,6 +263,7 @@ public class Registration extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton btnMenu;
     public javax.swing.JButton btnRegistrations;
+    public javax.swing.JComboBox<String> cdDireccionEmail;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -268,6 +277,7 @@ public class Registration extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    public javax.swing.JLabel lblErrorConfirmacion;
     public javax.swing.JLabel lblErrorDni;
     public javax.swing.JLabel lblErrorEmail;
     public javax.swing.JLabel lblErrorLastName;

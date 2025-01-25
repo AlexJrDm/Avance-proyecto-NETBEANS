@@ -1,16 +1,26 @@
 package Model;
 
 public class ModelProductCar {
+    private String codigo;
     private String nombreProducto;
     private String categoria;
     private int cantidad;
     private double precioVenta;
 
-    public ModelProductCar(String nombreProducto, String categoria, int cantidad, double precioVenta) {
+    public ModelProductCar(String codigo, String nombreProducto, String categoria, int cantidad, double precioVenta) {
+        this.codigo = codigo;
         this.nombreProducto = nombreProducto;
         this.categoria = categoria;
         this.cantidad = cantidad;
         this.precioVenta = precioVenta;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
     public String getNombreProducto() {

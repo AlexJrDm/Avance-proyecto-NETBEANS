@@ -101,6 +101,18 @@ public class Products implements Interface {
                 "Categoria: " + getCategory());
     }
     
+    // Método para validar el precio de venta
+    public boolean validateSellingPrice(AddProduct products) {
+        double priceUnitValue = Double.parseDouble(priceUnit);
+        double sellingPriceValue = Double.parseDouble(PSeller);
+        double requiredSellingPrice = priceUnitValue * 1.2; // Precio de venta debe ser al menos un 20% mayor
+        if (sellingPriceValue < requiredSellingPrice) { // El precio de venta debe ser al menos un 20% mayor que el precio de compra
+            System.out.println("[DEPURACION] El precio de venta no es al menos un 20% mayor que el precio de compra");
+            products.lblErrorPVentas.setText("*debe ser al menos un 20% mayor que el de compra*");
+            return false;
+        }
+        return true;
+    }
     public boolean validationsProduct(AddProduct products) {
         System.out.println("[DEPURACION] Iniciando validacion de producto...");
         validConfirmation = true;
@@ -129,43 +141,46 @@ public class Products implements Interface {
             products.lblErrorNombreProducto.setText("");
         }
 
-        if (getPriceUnit().isEmpty()) {
-            System.out.println("[DEPURACION] priceUnit esta vacio");
-            products.lblErrorPUnitario.setText("*campo obligatorio*");
-            validConfirmation = false;
-        } else if (!getPriceUnit().matches("\\d+(\\.\\d+)?")) {
-            System.out.println("[DEPURACION] priceUnit no es un numero valido");
-            products.lblErrorPUnitario.setText("*ingrese un precio*");
+// Validación para el precio unitario (precio de compra)
+    if (getPriceUnit().isEmpty()) {
+        System.out.println("[DEPURACION] priceUnit esta vacio");
+        products.lblErrorPUnitario.setText("*campo obligatorio*");
+        validConfirmation = false;
+    } else if (!getPriceUnit().matches("\\d+(\\.\\d+)?")) {
+        System.out.println("[DEPURACION] priceUnit no es un numero valido");
+        products.lblErrorPUnitario.setText("*ingrese un precio*");
+        validConfirmation = false;
+    } else {
+        double newPriceUni = Double.parseDouble(getPriceUnit());
+        if (newPriceUni < 0.03 || newPriceUni > 1000) {
+            System.out.println("[DEPURACION] priceUnit fuera de rango: " + newPriceUni);
+            products.lblErrorPUnitario.setText("*precio no posible*");
             validConfirmation = false;
         } else {
-            double newPriceUni = Double.parseDouble(getPriceUnit());
-            if (newPriceUni < 0.03 || newPriceUni > 1000) {
-                System.out.println("[DEPURACION] priceUnit fuera de rango: " + newPriceUni);
-                products.lblErrorPUnitario.setText("*precio no posible*");
-                validConfirmation = false;
-            } else {
-                products.lblErrorPUnitario.setText("");
-            }
+            products.lblErrorPUnitario.setText("");
         }
+    }
 
-        if (getPSeller().isEmpty()) {
-            System.out.println("[DEPURACION] PSeller esta vacio");
-            products.lblErrorPVentas.setText("*campo obligatorio*");
-            validConfirmation = false;
-        } else if (!getPSeller().matches("\\d+(\\.\\d+)?")) {
-            System.out.println("[DEPURACION] PSeller no es un numero valido");
-            products.lblErrorPVentas.setText("*ingrese un precio*");
+    // Validación para el precio de venta
+    if (getPSeller().isEmpty()) {
+        System.out.println("[DEPURACION] PSeller esta vacio");
+        products.lblErrorPVentas.setText("*campo obligatorio*");
+        validConfirmation = false;
+    } else if (!getPSeller().matches("\\d+(\\.\\d+)?")) {
+        System.out.println("[DEPURACION] PSeller no es un numero valido");
+        products.lblErrorPVentas.setText("*ingrese un precio*");
+        validConfirmation = false;
+    } else {
+        double newPriceSeller = Double.parseDouble(getPSeller());
+        if (newPriceSeller < 0 || newPriceSeller > 1000) {
+            System.out.println("[DEPURACION] PSeller fuera de rango: " + newPriceSeller);
+            products.lblErrorPVentas.setText("*precio no posible*");
             validConfirmation = false;
         } else {
-            double newPriceSeller = Double.parseDouble(getPSeller());
-            if (newPriceSeller < 0 || newPriceSeller > 1000) {
-                System.out.println("[DEPURACION] PSeller fuera de rango: " + newPriceSeller);
-                products.lblErrorPVentas.setText("*precio no posible*");
-                validConfirmation = false;
-            } else {
-                products.lblErrorPVentas.setText("");
-            }
+            products.lblErrorPVentas.setText("");
         }
+validConfirmation = validateSellingPrice(products);
+    }
 
         if (getIva().equals("IVA")) {
             System.out.println("[DEPURACION] IVA no seleccionado");
@@ -225,4 +240,5 @@ public class Products implements Interface {
         System.out.println("[DEPURACION] Validacion de producto finalizada. Estado: " + validConfirmation);
         return validConfirmation;
     }
+
 }

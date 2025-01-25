@@ -2,22 +2,25 @@ package Model;
 
 import View.FactureClients;
 
-public class ModelFacture implements Interface{
+public class ModelFacture {
     private String lastNames;
     private String names;
     private String addres;
     private String dni;
     private String email;
+    private String direccionEmail;
     private String cellPhone;
     
     public boolean validConfirmation = true;
 
-    public ModelFacture(String lastNames, String names, String addres, String dni, String email, String cellPhone) {
+    public ModelFacture(String lastNames, String names, String addres, String dni, String email,
+            String direccionEmail, String cellPhone) {
         this.lastNames = lastNames;
         this.names = names;
         this.addres = addres;
         this.dni = dni;
         this.email = email;
+        this.direccionEmail = direccionEmail;
         this.cellPhone = cellPhone;
     }
 
@@ -67,6 +70,14 @@ public class ModelFacture implements Interface{
 
     public void setCellPhone(String cellPhone) {
         this.cellPhone = cellPhone;
+    }
+
+    public String getDireccionEmail() {
+        return direccionEmail;
+    }
+
+    public void setDireccionEmail(String direccionEmail) {
+        this.direccionEmail = direccionEmail;
     }
     
     public boolean validationsFacture(FactureClients factura) { 
@@ -142,13 +153,15 @@ public class ModelFacture implements Interface{
         } else { 
             factura.lblErrorDireccion.setText(""); 
         }
+        
+        if (direccionEmail.equals("@email.com")){
+            System.out.println("[DEPURACION] dirección de correo no seleccionada"); 
+            factura.lblErrorEmail.setText("*debe seleccionar un email*");
+            validConfirmation = false;
+        } else {
+            factura.lblErrorEmail.setText("");
+        }
 
         return validConfirmation; 
-    }
-
-    
-    @Override 
-    public void getData() {
-        
     }
 }

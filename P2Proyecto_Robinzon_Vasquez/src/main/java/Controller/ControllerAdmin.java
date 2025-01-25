@@ -29,7 +29,7 @@ public class ControllerAdmin {
     public void cargarTablaAdmin() {
         List<Document> users = mongo.getAllUsersFromStore();
         DefaultTableModel table = new DefaultTableModel(new Object[] {"Names","LasNames","User","DNI",
-        "Email", "Password","Pago Mensual"},0);
+        "Email", "Password","Pago Mensual"},470);
         admin.tabla.setModel(table);
         table.setRowCount(0);
         
@@ -48,7 +48,7 @@ public class ControllerAdmin {
                 dni,
                 email,
                 password, 
-                0
+                470
             };
             table.addRow(row);
         }

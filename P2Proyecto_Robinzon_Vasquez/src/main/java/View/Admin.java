@@ -36,7 +36,7 @@ public class Admin extends javax.swing.JFrame {
         btnEliminar = new javax.swing.JButton();
         btnBuscar = new javax.swing.JButton();
         btnRecargarTabla = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        btnImprimirFacturasPDF = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
@@ -71,10 +71,10 @@ public class Admin extends javax.swing.JFrame {
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
 
         btnEliminar.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        btnEliminar.setText("Eliminar");
+        btnEliminar.setText("Despedir empleado");
 
         btnBuscar.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        btnBuscar.setText("Buscar");
+        btnBuscar.setText("Buscar empleado");
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBuscarActionPerformed(evt);
@@ -91,11 +91,11 @@ public class Admin extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addComponent(btnEliminar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 103, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                 .addComponent(btnRecargarTabla)
                 .addGap(47, 47, 47))
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(138, 138, 138)
+                .addGap(124, 124, 124)
                 .addComponent(btnBuscar)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -113,9 +113,9 @@ public class Admin extends javax.swing.JFrame {
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 390, 120));
 
-        jButton6.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jButton6.setText("Imprimir Facturas");
-        jPanel1.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 90, 200, 70));
+        btnImprimirFacturasPDF.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        btnImprimirFacturasPDF.setText("Imprimir Facturas");
+        jPanel1.add(btnImprimirFacturasPDF, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 90, 200, 70));
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PDFLogo1.0.jpg"))); // NOI18N
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 90, 80, 70));
@@ -213,9 +213,9 @@ public class Admin extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton btnBuscar;
     public javax.swing.JButton btnEliminar;
+    public javax.swing.JButton btnImprimirFacturasPDF;
     public javax.swing.JButton btnRecargarTabla;
     public javax.swing.JButton btnVolver;
-    private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

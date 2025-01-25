@@ -18,7 +18,7 @@ public class ConexionMongoDB {
 
     private final MongoClient mongoClient;
     private MongoDatabase database;
-    private final String databaseName = "P2Lab2Robinzon";
+    private final String databaseName = "P2ProyectRobinzon_Vasquez";
     private final String collectionNameUser = "Usuarios";
     private final String collectionNameProducts = "ProductsAdd";
     private final String collectionNameCarProducts = "CarritoDeComprasPorProducto";
@@ -60,10 +60,7 @@ public class ConexionMongoDB {
     public MongoCollection<Document> getCollectionCarBuys() {
         return database.getCollection("CarritoCompras");
     }
-    
-    public MongoCollection<Document> getCollectionProductsAdd() {
-        return database.getCollection("ProductsAdd");
-    }
+
 
     public MongoDatabase createConnection() {
         try {

@@ -4,6 +4,7 @@ import Model.ConexionMongoDB;
 import Model.ModelProductCar;
 import View.FactureClients;
 import View.SaleStore;
+
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import java.io.FileWriter;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import org.bson.Document;
@@ -37,7 +39,7 @@ public class ControllerSaleStore {
         
         DefaultTableModel tableModelCarrito = new DefaultTableModel(
             new Object[][] {},
-            new String[] { "Nombre Producto", "Categoria", "Cantidad Compra", "Precio de la Venta" }
+            new String[] { "Código","Nombre Producto", "Categoria", "Cantidad Compra", "Precio de la Venta" }
         );
         storeMenuSecond.TablaCarrito.setModel(tableModelCarrito);
     }
@@ -89,10 +91,10 @@ public class ControllerSaleStore {
     
     public void cargarTabla() {
         List<Document> products = mongo.getAllProductsFromStore();
-        DefaultTableModel tableModel = new DefaultTableModel(new Object[]{"NombreP", "Categoria", "Stock Actual", "Precio Unitario", "Cantidad"}, 0) {
+        DefaultTableModel tableModel = new DefaultTableModel(new Object[]{"Código", "NombreP", "Categoria", "Stock Actual", "Precio Venta", "Cantidad"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 4; // Hacer que solo la columna "Cantidad" sea editable
+                return column == 5; // Hacer que solo la columna "Cantidad" sea editable
             }
         };
         storeMenuSecond.tabla.setModel(tableModel);
@@ -101,10 +103,11 @@ public class ControllerSaleStore {
         for (Document product : products) {
             int stockActual = 0;
             int stockMinimo = 5; // Ejemplo de valor por defecto
+            String codigo = product.getString("Código");
             String nombreP = product.getString("NombreP");
             String categoria = product.getString("Categoria");
-            double precioUnitario = 0.0;
-
+            double precioVenta = 0.0;
+            
             // Manejar el caso en el que el stock actual es un String
             if (product.get("Stock Actual") instanceof Integer) {
                 stockActual = product.getInteger("Stock Actual");
@@ -116,14 +119,14 @@ public class ControllerSaleStore {
                 }
             }
 
-            // Manejar el caso en el que el precio unitario es un String
-            if (product.get("Precio Unitario") instanceof Double) {
-                precioUnitario = product.getDouble("Precio Unitario");
-            } else if (product.get("Precio Unitario") instanceof String) {
+            // Manejar el caso en el que el precio venta es un String
+            if (product.get("Precio Venta") instanceof Double) {
+                precioVenta = product.getDouble("Precio Venta");
+            } else if (product.get("Precio Venta") instanceof String) {
                 try {
-                    precioUnitario = Double.parseDouble(product.getString("Precio Unitario"));
+                    precioVenta = Double.parseDouble(product.getString("Precio Venta"));
                 } catch (NumberFormatException e) {
-                    System.out.println("[ERROR] No se pudo convertir el precio unitario a Double: " + product.getString("Precio Unitario"));
+                    System.out.println("[ERROR] No se pudo convertir el precio Venta a Double: " + product.getString("Precio Venta"));
                 }
             }
 
@@ -139,10 +142,11 @@ public class ControllerSaleStore {
             }
 
             Object[] row = {
+                codigo,
                 nombreP,
                 categoria,
                 stockActual,
-                precioUnitario,
+                precioVenta,
                 0 // Inicialmente, la cantidad es 0
             };
             tableModel.addRow(row);
@@ -166,17 +170,19 @@ public class ControllerSaleStore {
 
             while (cursor.hasNext()) {
                 Document producto = cursor.next();
+                String codigo = producto.getString("Código");
                 String nombreP = producto.getString("NombreP");
                 String categoriaProducto = producto.getString("Categoria");
                 String stockMinimo = producto.get("Stock Actual") != null ? String.valueOf(producto.get("Stock Actual")) : "0";
-                String precioUnitario = producto.get("Precio Unitario") != null ? String.valueOf(producto.get("Precio Unitario")) : "0";
+                String precioVenta = producto.get("Precio Venta") != null ? String.valueOf(producto.get("Precio Venta")) : "0";
                 String cantidad = producto.get("Cantidad") != null ? String.valueOf(producto.get("Cantidad")) : "0";
 
                 String[] fila = {
+                    codigo,
                     nombreP,
                     categoriaProducto,
                     stockMinimo,
-                    precioUnitario,
+                    precioVenta,
                     cantidad
                 };
                 tabla.addRow(fila);
@@ -187,50 +193,78 @@ public class ControllerSaleStore {
            
         }
     }
+public void lookForProductsSecondMenu() {
+    // Limpiar la tabla antes de buscar
+    limpiarTabla();
 
-    public void lookForProductsSecondMenu(String nombreProducto) {
-        nombreProducto = storeMenuSecond.txtProducto.getText();
-        
-        if (nombreProducto.isEmpty() || nombreProducto == null) {
-            JOptionPane.showMessageDialog(storeMenuSecond, "No se ha encontrado un Producto con tal nombre.");
-        }
-        
-        Bson filter = Filters.eq("NombreP", nombreProducto);
-        System.out.println("[DEPURACION] Buscando el producto: " + nombreProducto);
-        ArrayList<Document> resultados = mongo.searchProduct(filter);
-        limpiarTabla();
+    // Obtener los valores de los campos de texto
+    String nombreProducto = storeMenuSecond.txtProducto.getText().trim();
+    String codigoProducto = storeMenuSecond.txtProducto.getText().trim();
+    String categoriaProducto = storeMenuSecond.txtProducto.getText().trim();
 
-        if (resultados != null && !resultados.isEmpty()) {
-            DefaultTableModel table = (DefaultTableModel) storeMenuSecond.tabla.getModel();
-            for (Document doc : resultados) {
-                String nombreP = doc.getString("NombreP");
-                String categoria = doc.getString("Categoria");
-                String stockActual = doc.get("Stock Actual") != null ? String.valueOf(doc.get("Stock Actual")) : "0";
-                String precioUnitario = doc.get("Precio Unitario") != null ? String.valueOf(doc.get("Precio Unitario")) : "0";
+    // Crear una lista de filtros
+    ArrayList<Bson> filters = new ArrayList<>();
 
-                table.addRow(new Object[]{
-                    nombreP,
-                    categoria,
-                    stockActual,
-                    precioUnitario,
-                    0
-                });
-            }
-        } else {
-            JOptionPane.showMessageDialog(storeMenuSecond, "No se ha encontrado un Producto con tal nombre.");
-        }
+    // Agregar filtros según los parámetros no vacíos
+    if (!nombreProducto.isEmpty()) {
+        filters.add(Filters.regex("NombreP", ".*" + Pattern.quote(nombreProducto) + ".*", "i"));
     }
+    if (!codigoProducto.isEmpty()) {
+        filters.add(Filters.regex("Código", ".*" + Pattern.quote(codigoProducto) + ".*", "i"));
+    }
+    if (!categoriaProducto.isEmpty()) {
+        filters.add(Filters.regex("Categoria", ".*" + Pattern.quote(categoriaProducto) + ".*", "i"));
+    }
+
+    // Verificar si hay filtros
+    if (filters.isEmpty()) {
+        JOptionPane.showMessageDialog(storeMenuSecond, "Por favor, ingrese al menos un criterio de búsqueda.");
+        return;
+    }
+
+    // Combinar los filtros en uno solo
+    Bson filter = Filters.or(filters);
+
+    System.out.println("[DEPURACION] Buscando productos con los filtros: " + filters);
+    ArrayList<Document> resultados = mongo.searchProduct(filter);
+
+    // Limpiar la tabla antes de cargar los resultados
+    DefaultTableModel table = (DefaultTableModel) storeMenuSecond.tabla.getModel();
+    table.setRowCount(0);
+
+    if (resultados != null && !resultados.isEmpty()) {
+        for (Document doc : resultados) {
+            String codigo = doc.getString("Código");
+            String nombreP = doc.getString("NombreP");
+            String categoria = doc.getString("Categoria");
+            String stockActual = doc.get("Stock Actual") != null ? String.valueOf(doc.get("Stock Actual")) : "0";
+            String precioVenta = doc.get("Precio Venta") != null ? String.valueOf(doc.get("Precio Venta")) : "0";
+
+            table.addRow(new Object[]{
+                codigo,
+                nombreP,
+                categoria,
+                stockActual,
+                precioVenta,
+                0
+            });
+        }
+    } else {
+        JOptionPane.showMessageDialog(storeMenuSecond, "No se ha encontrado un Producto con los criterios especificados.");
+    }
+}
     
     public void addProductToCar() {
     DefaultTableModel tableModel = (DefaultTableModel) storeMenuSecond.tabla.getModel();
     int selectedRow = storeMenuSecond.tabla.getSelectedRow();
 
     if (selectedRow != -1) {
-        String nombreP = (String) tableModel.getValueAt(selectedRow, 0);
-        String categoria = (String) tableModel.getValueAt(selectedRow, 1);
-        int stockActual = Integer.parseInt(String.valueOf(tableModel.getValueAt(selectedRow, 2)));
-        double precioUnitario = Double.parseDouble(String.valueOf(tableModel.getValueAt(selectedRow, 3)));
-        Object cantidadObj = tableModel.getValueAt(selectedRow, 4);
+        String codigo = (String) tableModel.getValueAt(selectedRow, 0);
+        String nombreP = (String) tableModel.getValueAt(selectedRow, 1);
+        String categoria = (String) tableModel.getValueAt(selectedRow, 2);
+        int stockActual = Integer.parseInt(String.valueOf(tableModel.getValueAt(selectedRow, 3)));
+        double precioVenta = Double.parseDouble(String.valueOf(tableModel.getValueAt(selectedRow, 4)));
+        Object cantidadObj = tableModel.getValueAt(selectedRow, 5);
 
         if (cantidadObj == null || cantidadObj.toString().trim().isEmpty()) {
             JOptionPane.showMessageDialog(storeMenuSecond, "Por favor, ingrese una cantidad válida.");
@@ -241,7 +275,7 @@ public class ControllerSaleStore {
 
         if (cantidad > 0 && cantidad <= stockActual) {
             // Calcular el precio total de la venta
-            double precioTotal = cantidad * precioUnitario;
+            double precioTotal = cantidad * precioVenta;
 
             // Verificar si el producto ya está en el carrito
             boolean productoExistente = false;
@@ -249,7 +283,7 @@ public class ControllerSaleStore {
                 if (producto.getNombreProducto().equals(nombreP)) {
                     // Actualizar la cantidad del producto existente
                     producto.setCantidad(producto.getCantidad() + cantidad);
-                    producto.setPrecioVenta(producto.getCantidad() * precioUnitario);
+                    producto.setPrecioVenta(producto.getCantidad() * precioVenta);
                     productoExistente = true;
                     break;
                 }
@@ -257,7 +291,7 @@ public class ControllerSaleStore {
 
             if (!productoExistente) {
                 // Crear un objeto del carrito
-                ModelProductCar productoCarrito = new ModelProductCar(nombreP, categoria, cantidad, precioTotal);
+                ModelProductCar productoCarrito = new ModelProductCar(codigo, nombreP, categoria, cantidad, precioTotal);
 
                 // Añadirlo a la lista del carrito
                 carrito.add(productoCarrito);
@@ -265,6 +299,7 @@ public class ControllerSaleStore {
                 // Mostrar el producto añadido en la tabla
                 DefaultTableModel tableCarrito = (DefaultTableModel) storeMenuSecond.TablaCarrito.getModel();
                 tableCarrito.addRow(new Object[]{
+                    productoCarrito.getCodigo(),
                     productoCarrito.getNombreProducto(),
                     productoCarrito.getCategoria(),
                     productoCarrito.getCantidad(),
@@ -272,6 +307,7 @@ public class ControllerSaleStore {
                 });
                 try (FileWriter writer = new FileWriter("ProductosComprados.csv",true)){
                     writer.write("Productos Comprados");
+                    writer.write("Código del producto"+productoCarrito.getCodigo());
                     writer.write("Nombre producto: " + productoCarrito.getNombreProducto());
                     writer.write("Categoria" + productoCarrito.getCategoria());
                     writer.write("Cantidad: " + productoCarrito.getCantidad());
@@ -284,19 +320,20 @@ public class ControllerSaleStore {
                 // Actualizar la tabla del carrito
                 DefaultTableModel tableCarrito = (DefaultTableModel) storeMenuSecond.TablaCarrito.getModel();
                 for (int i = 0; i < tableCarrito.getRowCount(); i++) {
-                    if (tableCarrito.getValueAt(i, 0).equals(nombreP)) {
-                        tableCarrito.setValueAt(cantidad, i, 2);
-                        tableCarrito.setValueAt(cantidad * precioUnitario, i, 3);
+                    if (tableCarrito.getValueAt(i, 1).equals(nombreP)) {
+                        tableCarrito.setValueAt(cantidad, i, 3);
+                        tableCarrito.setValueAt(cantidad * precioVenta, i, 4);
                         break;
                     }
                 }
             }
 
             // Guardar el producto en la colección CarritoDeCompras
-            Document doc = new Document("NombreP", nombreP)
+            Document doc = new Document("Código", codigo)
+                    .append("NombreP", nombreP)
                     .append("Categoria", categoria)
                     .append("Cantidad", cantidad)
-                    .append("Precio Unitario", precioUnitario)
+                    .append("Precio Venta", precioVenta)
                     .append("Precio Total", precioTotal);
             if (mongo.saveCarBuys(doc)) {
                 System.out.println("[DEPURACION] el carrito fue aniadido correctamente a la base de datos");
@@ -311,7 +348,7 @@ public class ControllerSaleStore {
             mongo.createConnection().getCollection("ProductsAdd").updateOne(filter, updateOperation);
 
             // Actualizar el stock en la tabla
-            tableModel.setValueAt(nuevoStock, selectedRow, 2);
+            tableModel.setValueAt(nuevoStock, selectedRow, 3);
 
             if (nuevoStock == 0) {
                 // Eliminar la fila si el stock llega a cero
@@ -399,12 +436,14 @@ public class ControllerSaleStore {
         List<Document> productosCarrito = new ArrayList<>();
 
         for (int i = 0; i < tableModelCarrito.getRowCount(); i++) {
-            String nombreP = (String) tableModelCarrito.getValueAt(i, 0);
-            String categoria = (String) tableModelCarrito.getValueAt(i, 1);
-            int cantidad = (int) tableModelCarrito.getValueAt(i, 2);
-            double precioVenta = (double) tableModelCarrito.getValueAt(i, 3);
+            String codigo = (String) tableModelCarrito.getValueAt(i, 0);
+            String nombreP = (String) tableModelCarrito.getValueAt(i, 1);
+            String categoria = (String) tableModelCarrito.getValueAt(i, 2);
+            int cantidad = (int) tableModelCarrito.getValueAt(i, 3);
+            double precioVenta = (double) tableModelCarrito.getValueAt(i, 4);
 
-            Document producto = new Document("NombreP", nombreP)
+            Document producto = new Document("Código", codigo)
+                    .append("NombreP", nombreP)
                     .append("Categoria", categoria)
                     .append("Cantidad", cantidad)
                     .append("Precio Venta", precioVenta);
@@ -432,8 +471,8 @@ public class ControllerSaleStore {
         }
 
         DefaultTableModel tableModelCarrito = (DefaultTableModel) storeMenuSecond.TablaCarrito.getModel();
-        String nombreP = (String) tableModelCarrito.getValueAt(rowSelected, 0);
-        int cantidad = (int) tableModelCarrito.getValueAt(rowSelected, 2);
+        String nombreP = (String) tableModelCarrito.getValueAt(rowSelected, 1);
+        int cantidad = (int) tableModelCarrito.getValueAt(rowSelected, 3);
 
         int confirmar = JOptionPane.showConfirmDialog(storeMenuSecond, 
                 "¿Está seguro de que desea eliminar el producto '" + nombreP + "' del carrito?",
@@ -466,7 +505,7 @@ public class ControllerSaleStore {
                 JOptionPane.showMessageDialog(storeMenuSecond, 
                         "Error al eliminar el producto del carrito. Intente nuevamente.", 
                         "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            } 
         }
     }
 
